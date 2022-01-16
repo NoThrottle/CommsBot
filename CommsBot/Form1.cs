@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,15 +34,27 @@ namespace CommsBot
         public static bool typingcode; //add this later
         public static bool enableKeyHandler = false;
 
+        String audiodevice = null;
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams handleParam = base.CreateParams;
+                handleParam.ExStyle |= 0x02000000;      // WS_EX_COMPOSITED
+                return handleParam;
+            }
+        }
+
         public Form1()
         {
 
             InitializeComponent();
+
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             UpdateButton(-1, true);//Initialize Button Names
 
             HandleHandlers();
-
 
         }
 
@@ -98,6 +111,7 @@ namespace CommsBot
             String prehome = Path.Combine(LocalAppdata, ".commsbot");
             String home = Path.Combine(LocalAppdata, ".commsbot", "Say");
             String nextpath = globalpath;
+
 
             Console.WriteLine(home);// debug
             Directory.CreateDirectory(home); // create home if it doesnt exist
@@ -337,6 +351,22 @@ namespace CommsBot
             SendMessage(this.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
         }
 
+        private void volumeMeter1_Click(object sender, EventArgs e)
+        {
+            //volumeMeter1.FlatAppeara
+        }
+
+        private void Settings_Click(object sender, EventArgs e)
+        {
+            Settings settings = new CommsBot.Settings();
+            settings.Show();
+            this.Close();
+        }
+
+        public void OpenForm()
+        {
+            this.Show();
+        }
     }
 
     #region Handle Keypress
@@ -382,4 +412,5 @@ namespace CommsBot
         }
     }
     #endregion
+
 }
