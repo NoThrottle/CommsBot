@@ -24,7 +24,7 @@ namespace CommsBot
 
         //Defaults
         String AD1 = "0";
-        String UD2 = "Frue";
+        String UD2 = "False";
         String AD2 = "0";
         String TP = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ".commsbot", "Say");
         String OB = "False";
@@ -42,6 +42,7 @@ namespace CommsBot
             {
                 StreamReader sr = new StreamReader(prehome);
                 line = sr.ReadLine();
+                lines.Add(line);
                 while (line != null)
                 {
                     line = sr.ReadLine();
@@ -57,11 +58,19 @@ namespace CommsBot
                 TP = Settings[3];
                 OB = Settings[4];
 
+                Console.WriteLine("settings");
+                Console.WriteLine(AD1);
+                Console.WriteLine(UD2);
+                Console.WriteLine(AD2);
+                Console.WriteLine(TP);
+                Console.WriteLine(OB);
+                Console.WriteLine("settings");
+
             }
             catch (Exception e)
             {
                 Console.WriteLine("Exception: " + e.Message);
-                WriteSettings(DefaultAudioDevice(),null, DefaultAudioDevice(), null,null);
+                WriteSettings(DefaultAudioDevice(),null,DefaultAudioDevice(),null,null);
                 FetchSettings();
             }
 
@@ -71,12 +80,12 @@ namespace CommsBot
         {
             try
             {
-                return AudioDevicesList()[0];
+                return AudioDevicesList()[1];
             }
             catch
             {
                 MessageBox.Show("Could not Fetch your audio devices","Error",MessageBoxButtons.OK);
-                return "0";
+                return "1";
             }
         }
 
@@ -87,6 +96,7 @@ namespace CommsBot
             {
                 var caps = WaveOut.GetCapabilities(n);
                 Console.WriteLine($"{n}: {caps.ProductName}");
+                devices.Add(caps.ProductGuid.ToString());
             }
 
             return devices;
@@ -101,11 +111,11 @@ namespace CommsBot
             {
                 StreamWriter sw = new StreamWriter(prehome);
 
-                if (a == null) { sw.WriteLine(a); } else { sw.WriteLine(AD1); }
-                if (b == null) { sw.WriteLine(b); } else { sw.WriteLine(UD2); }
-                if (c == null) { sw.WriteLine(c); } else { sw.WriteLine(AD2); }
-                if (d == null) { sw.WriteLine(d); } else { sw.WriteLine(TP); }
-                if (e == null) { sw.WriteLine(e); } else { sw.WriteLine(OB); }
+                if (a != null) { sw.WriteLine(a); } else { sw.WriteLine(AD1); }
+                if (b != null) { sw.WriteLine(b); } else { sw.WriteLine(UD2); }
+                if (c != null) { sw.WriteLine(c); } else { sw.WriteLine(AD2); }
+                if (d != null) { sw.WriteLine(d); } else { sw.WriteLine(TP); }
+                if (e != null) { sw.WriteLine(e); } else { sw.WriteLine(OB); }
 
                 sw.Close();
             }

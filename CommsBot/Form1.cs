@@ -41,6 +41,7 @@ namespace CommsBot
         String TP;
         bool? OB;
 
+        List<System.Guid> audguid = new List<System.Guid>();
 
         protected override CreateParams CreateParams
         {
@@ -67,6 +68,11 @@ namespace CommsBot
             AD2 = file.SecondAudioDevice();
             TP = file.TreePath();
             OB = file.HasBeenOpenedBefore();
+
+
+
+            AudioDevicesList();
+            OnForeColorChanged(EventArgs.Empty);
 
 
         }
@@ -223,7 +229,13 @@ namespace CommsBot
             else
             {
                 Random rnd = new Random();
-                playSound(1, audiofiles[rnd.Next(0, audiofiles.Length - 1)]);
+                playSound(ParseAD1Index(), audiofiles[rnd.Next(0, audiofiles.Length)]);
+
+                if (UD2 == true)
+                {
+                    playSound(ParseAD1Index(), audiofiles[rnd.Next(0, audiofiles.Length)]);
+
+                }
             }
         }
 
@@ -232,7 +244,7 @@ namespace CommsBot
 
             if (outputDevice == null)
             {
-                outputDevice = new WaveOutEvent();
+                outputDevice = new WaveOutEvent() { DeviceNumber = deviceNumber };
                 outputDevice.PlaybackStopped += OnPlaybackStopped;
             }
             if (audioFile == null)
@@ -242,12 +254,6 @@ namespace CommsBot
             }
             outputDevice.Play();
 
-            //disposeWave();// stop previous sounds before starting
-            //WaveReader waveReader = new NAudio.Wave.WaveFileReader(globalpath);
-            //var waveOut = new NAudio.Wave.WaveOut();
-            //waveOut.DeviceNumber = deviceNumber;
-            //waveOut.Init(waveReader);
-            //waveOut.Play();
         }
 
         private void OnPlaybackStopped(object sender, StoppedEventArgs args)
@@ -256,6 +262,57 @@ namespace CommsBot
             outputDevice = null;
             audioFile.Dispose();
             audioFile = null;
+        }
+
+        private void AudioDevicesList()
+        {
+            List<System.Guid> ids = new List<System.Guid>();
+            for (int n = -1; n < WaveOut.DeviceCount; n++)
+            {
+                var caps = WaveOut.GetCapabilities(n);
+                Console.WriteLine($"{n}: {caps.ProductName}");
+                ids.Add(caps.ProductGuid);
+            }
+
+            audguid = ids;
+        }
+
+        private int ParseAD1Index()
+        {
+            int i = 0;
+            while (i != audguid.Count)
+            {
+                if (audguid[i] != Guid.Parse(AD1))
+                {
+                    i++;
+                }
+                else
+                {
+                    return i-1;
+                }
+            }
+
+            MessageBox.Show("Previously Set Audio Device 1 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+            return 0;
+        }
+
+        private int ParseAD2Index()
+        {
+            int i = 0;
+            while (i != audguid.Count)
+            {
+                if (audguid[i] != Guid.Parse(AD2))
+                {
+                    i++;
+                }
+                else
+                {
+                    return i-1;
+                }
+            }
+
+            MessageBox.Show("Previously Set Audio Device 2 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+            return 0;
         }
 
         #endregion //----------------------
@@ -374,6 +431,51 @@ namespace CommsBot
             Settings settings = new Settings();
             settings.Show();
             this.Close();
+        }
+
+
+        Brush foregroundBrush;
+
+        protected override void OnForeColorChanged(EventArgs e)
+        {
+            foregroundBrush = new SolidBrush(ForeColor);
+            base.OnForeColorChanged(e);
+        }
+
+        protected override void OnPaint(PaintEventArgs pe)
+        {
+            //base.OnPaint(pe);
+            pe.Graphics.DrawRectangle(Pens.Black, 0, 0, this.Width - 1, this.Height - 1);
+            double db = 20 * Math.Log10(volumeMeter1.Amplitude);
+
+            if (db < this.volumeMeter1.MinDb)
+
+                db = volumeMeter1.MinDb;
+
+            if (db > volumeMeter1.MaxDb)
+
+                db = volumeMeter1.MaxDb;
+
+            double percent = (db - volumeMeter1.MinDb) / (volumeMeter1.MaxDb - volumeMeter1.MinDb);
+            int width = this.Width - 2;
+
+            int height = this.Height - 2;
+
+            if (volumeMeter1.Orientation == Orientation.Horizontal)
+
+            {
+
+                width = (int)(width * percent);
+                pe.Graphics.FillRectangle(foregroundBrush, 1, 1, width, height);
+            }
+
+            else
+            {
+                height = (int)(height * percent);
+                pe.Graphics.FillRectangle(foregroundBrush, 1, this.Height - 1 - height, width, height);
+
+            }
+
         }
     }
 

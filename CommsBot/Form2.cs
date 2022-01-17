@@ -52,65 +52,100 @@ namespace CommsBot
 
             //Instantiate Changes to Buttons/TextBoxes based on Settings Files
 
-            textBox2.Text = TP;
-
-
+            textBox2.Text = TP; //TextBox for Path
             if (UD2 == true)
             {
                 SecondAudioOutState(true);
+                checkBox1.Checked = true;
             } else
             {
                 SecondAudioOutState(false);
-            }
+                checkBox1.Checked = false;
 
+            } //Audio Device Selections and checkbox
 
+            comboBox1.SelectedIndex = ParseAD1Index();
+            customComboBox1.SelectedIndex = ParseAD2Index();
 
             button1.Enabled = false;
         }
 
-        protected override CreateParams CreateParams
+        private int ParseAD1Index()
         {
-            get
+            try
             {
-                CreateParams handleParam = base.CreateParams;
-                handleParam.ExStyle |= 0x02000000;      // WS_EX_COMPOSITED
-                return handleParam;
+                int i = 0;
+                while (i <= audguid.Count - 1)
+                {
+                    Console.WriteLine(audguid[i]);
+                    if (audguid[i] != Guid.Parse(AD1))
+                    {
+                        i++;
+                    }
+                    else
+                    {
+                        return i;
+                    }
+                }
+
+                MessageBox.Show("Previously Set Audio Device 1 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+                return 0;
             }
+            catch
+            {
+                MessageBox.Show("Audio Device 1 was set incorrectly. Resetting to Default", "Error", MessageBoxButtons.OK);
+                SettingsFile file = new SettingsFile();
+                file.WriteSettings(null, null, null, null, null);
+                return 0;
+            }
+
         }
 
-        private void AudioDevicesList()
+        private int ParseAD2Index()
         {
-            List<String> devices = new List<String>();
-            List<System.Guid> ids = new List<System.Guid>();
-            for (int n = -1; n < WaveOut.DeviceCount; n++)
+            try
             {
-                var caps = WaveOut.GetCapabilities(n);
-                Console.WriteLine($"{n}: {caps.ProductName}");
-                devices.Add(caps.ProductName);
-                this.comboBox1.Items.Add(caps.ProductName);
-                this.customComboBox1.Items.Add(caps.ProductName);
-                ids.Add(caps.ProductGuid);
+                int i = 0;
+                while (i != audguid.Count)
+                {
+                    if (audguid[i] != Guid.Parse(AD2))
+                    {
+                        i++;
+                    }
+                    else
+                    {
+                        return i;
+                    }
+                }
+
+                MessageBox.Show("Previously Set Audio Device 2 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+                return 0;
             }
-
-            audguid = ids;
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //comboBox1.SelectedIndex;
+            catch
+            {
+                MessageBox.Show("Audio Device 2 was set incorrectly. Resetting to Default", "Error", MessageBoxButtons.OK);
+                SettingsFile file = new SettingsFile();
+                file.WriteSettings(null, null, null, null, null);
+                return 0;
+            }
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
 
+            ThereIsChange = true;
+            EnableSaveButton();
+
             if (checkBox1.Checked != true)
             {
                 SecondAudioOutState(false);
+                UD2 = false;
             } else
             {
                 SecondAudioOutState(true);
+                UD2 = true;
             }
-        }
+        }//done
 
         private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)
         {
@@ -158,6 +193,8 @@ namespace CommsBot
                 //Browse Button Post Location
                 this.button2.Location = new System.Drawing.Point(302, 190);
 
+                this.Size = new Size(366, 282);
+
                 ReallyCenterToScreen();
 
 
@@ -173,11 +210,65 @@ namespace CommsBot
                 this.textBox2.Location = new System.Drawing.Point(9, 141);
                 this.button2.Location = new System.Drawing.Point(302, 141);
 
+                this.Size = new Size(366, 232);
+
                 ReallyCenterToScreen();
 
             }
+        } //done
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ThereIsChange = true;
+            EnableSaveButton();
+
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            dialog.SelectedPath = TP;
+            dialog.ShowDialog();
+
+            textBox2.Text = dialog.SelectedPath;
+
+        } //done
+
+        private void EnableSaveButton()
+        {
+            button1.Enabled = true;
+        } //done
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AD1 = audguid[comboBox1.SelectedIndex].ToString();
+            ThereIsChange = true;
+            EnableSaveButton();
+        }//done
+
+        private void customComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AD2 = audguid[customComboBox1.SelectedIndex].ToString();
+            ThereIsChange = true;
+            EnableSaveButton();
+        }//Done
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            ThereIsChange = true;
+            EnableSaveButton();
+            TP = textBox2.Text;
+        }//done
+
+        //Save
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
+            SettingsFile file = new SettingsFile();
+            file.WriteSettings(AD1, UD2.ToString(), AD2, TP, OB.ToString());
+
+            //Disable After Saving Possible Changes
+            ThereIsChange = false;
+            button1.Enabled = false;
         }
 
+        #region Private Returns/Functions
         protected void ReallyCenterToScreen()
         {
             Screen screen = Screen.FromControl(this);
@@ -189,11 +280,45 @@ namespace CommsBot
                 Y = Math.Max(workingArea.Y, workingArea.Y + (workingArea.Height - this.Height) / 2)
             };
         }
-
-        private void draggable()
+        protected override CreateParams CreateParams
         {
-            ReleaseCapture();
-            SendMessage(this.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            get
+            {
+                CreateParams handleParam = base.CreateParams;
+                handleParam.ExStyle |= 0x02000000;      // WS_EX_COMPOSITED
+                return handleParam;
+            }
+        }
+
+        private void AudioDevicesList()
+        {
+            List<String> devices = new List<String>();
+            List<System.Guid> ids = new List<System.Guid>();
+            for (int n = -1; n < WaveOut.DeviceCount; n++)
+            {
+                var caps = WaveOut.GetCapabilities(n);
+                Console.WriteLine($"{n}: {caps.ProductName}");
+                devices.Add(caps.ProductName);
+                this.comboBox1.Items.Add(caps.ProductName);
+                this.customComboBox1.Items.Add(caps.ProductName);
+                ids.Add(caps.ProductGuid);
+            }
+
+            audguid = ids;
+        }
+        #endregion
+
+        #region TopBar
+        private void CloseSettings()
+        {
+            Form1 form1 = new Form1();
+            form1.Show();
+            this.Close();
+        }
+
+        private void Minimize_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -207,31 +332,39 @@ namespace CommsBot
                 {
                     CloseSettings();
                 }
-            } else
+            }
+            else
             {
                 CloseSettings();
             }
         }
 
-        private void CloseSettings()
-        {
-            Form1 form1 = new Form1();
-            form1.Show();
-            this.Close();
-        }
+        #endregion
 
-        private void Minimize_Click(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Minimized;
-        }
-
-        //draggable
+        #region Draggable
         private void Settings_Click(object sender, EventArgs e)
         {
             draggable();
         }
 
         private void label3_Click_1(object sender, EventArgs e)
+        {
+            draggable();
+        }
+
+        private void draggable()
+        {
+            ReleaseCapture();
+            SendMessage(this.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+        }
+        #endregion
+
+        private void Settings_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Settings_MouseDown(object sender, MouseEventArgs e)
         {
             draggable();
         }
