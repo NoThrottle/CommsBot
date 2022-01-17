@@ -16,8 +16,13 @@ namespace CommsBot
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
 
+            //check if this is first load and give the user a rundown of how to use the program.
+
+            Form window = new Form1();
+            window.Show();
+
+            Application.Run();
 
         }
 

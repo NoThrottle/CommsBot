@@ -26,11 +26,10 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
+        public void InitializeComponent()
         {
             this.button5 = new System.Windows.Forms.Button();
             this.Minimize = new System.Windows.Forms.Button();
-            this.comboBox1 = new CommsBot.CustomComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
@@ -38,8 +37,9 @@
             this.button2 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.customComboBox1 = new CommsBot.CustomComboBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.customComboBox1 = new CommsBot.CustomComboBox();
+            this.comboBox1 = new CommsBot.CustomComboBox();
             this.SuspendLayout();
             // 
             // button5
@@ -68,21 +68,6 @@
             this.Minimize.UseVisualStyleBackColor = false;
             this.Minimize.Click += new System.EventHandler(this.Minimize_Click);
             // 
-            // comboBox1
-            // 
-            this.comboBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(43)))), ((int)(((byte)(43)))));
-            this.comboBox1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(43)))), ((int)(((byte)(43)))));
-            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboBox1.ForeColor = System.Drawing.Color.White;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(9, 63);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(0);
-            this.comboBox1.MaxDropDownItems = 100;
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(348, 21);
-            this.comboBox1.TabIndex = 26;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -92,6 +77,7 @@
             this.label1.Size = new System.Drawing.Size(112, 13);
             this.label1.TabIndex = 27;
             this.label1.Text = "Use this Audio Device";
+            this.label1.Click += new System.EventHandler(this.label3_Click_1);
             // 
             // checkBox1
             // 
@@ -113,12 +99,12 @@
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.LightGray;
-            this.label3.Location = new System.Drawing.Point(6, 174);
+            this.label3.Location = new System.Drawing.Point(6, 125);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(70, 13);
             this.label3.TabIndex = 34;
             this.label3.Text = "Controls Tree";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
+            this.label3.Click += new System.EventHandler(this.label3_Click_1);
             // 
             // button2
             // 
@@ -126,7 +112,7 @@
             this.button2.FlatAppearance.BorderSize = 0;
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.ForeColor = System.Drawing.Color.LightGray;
-            this.button2.Location = new System.Drawing.Point(302, 190);
+            this.button2.Location = new System.Drawing.Point(302, 141);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(55, 23);
             this.button2.TabIndex = 33;
@@ -137,11 +123,19 @@
             // 
             this.textBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(43)))), ((int)(((byte)(43)))));
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox2.Location = new System.Drawing.Point(9, 190);
+            this.textBox2.Location = new System.Drawing.Point(9, 141);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(287, 23);
             this.textBox2.TabIndex = 32;
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(0, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(100, 23);
+            this.label2.TabIndex = 38;
+            this.label2.Visible = false;
             // 
             // button1
             // 
@@ -149,19 +143,43 @@
             this.button1.FlatAppearance.BorderSize = 0;
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.ForeColor = System.Drawing.Color.LightGray;
-            this.button1.Location = new System.Drawing.Point(282, 245);
+            this.button1.Location = new System.Drawing.Point(282, 197);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 37;
             this.button1.Text = "Save";
             this.button1.UseVisualStyleBackColor = false;
             // 
+            // customComboBox1
+            // 
+            this.customComboBox1.BorderColor = System.Drawing.Color.Black;
+            this.customComboBox1.Location = new System.Drawing.Point(0, 0);
+            this.customComboBox1.Name = "customComboBox1";
+            this.customComboBox1.Size = new System.Drawing.Size(121, 21);
+            this.customComboBox1.TabIndex = 39;
+            this.customComboBox1.Visible = false;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(43)))), ((int)(((byte)(43)))));
+            this.comboBox1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(43)))), ((int)(((byte)(43)))));
+            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboBox1.ForeColor = System.Drawing.Color.White;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(9, 63);
+            this.comboBox1.Margin = new System.Windows.Forms.Padding(0);
+            this.comboBox1.MaxDropDownItems = 100;
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(348, 21);
+            this.comboBox1.TabIndex = 26;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(19)))), ((int)(((byte)(19)))), ((int)(((byte)(19)))));
-            this.ClientSize = new System.Drawing.Size(366, 280);
+            this.ClientSize = new System.Drawing.Size(366, 232);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.customComboBox1);
@@ -177,8 +195,9 @@
             this.MaximizeBox = false;
             this.Name = "Settings";
             this.Opacity = 0.97D;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form2";
+            this.Click += new System.EventHandler(this.Settings_Click);
             this.ResumeLayout(false);
             this.PerformLayout();
 
