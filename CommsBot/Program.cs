@@ -16,8 +16,11 @@ namespace CommsBot
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
 
+            Form window = new Form1();
+            window.Show();
+
+            Application.Run();
 
         }
 

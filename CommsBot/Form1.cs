@@ -358,14 +358,9 @@ namespace CommsBot
 
         private void Settings_Click(object sender, EventArgs e)
         {
-            Settings settings = new CommsBot.Settings();
+            Settings settings = new Settings();
             settings.Show();
             this.Close();
-        }
-
-        public void OpenForm()
-        {
-            this.Show();
         }
     }
 
