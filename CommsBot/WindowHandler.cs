@@ -36,7 +36,7 @@
             ////settings.VisibleChanged += new EventHandler(Form1_Hidden);
             //form1.FormClosed += new FormClosedEventHandler(Form1_FormClosed);
 
-        }
+        //}
 
         //public void SettingsOpen()
         //{
