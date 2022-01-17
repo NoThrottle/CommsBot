@@ -18,6 +18,7 @@ namespace CommsBot
     public partial class Form1 : Form
     {
 
+        #region Draggable
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
 
@@ -25,16 +26,21 @@ namespace CommsBot
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
         [DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
+        #endregion
 
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-
 
         public static string globalpath;
         public static bool typingcode; //add this later
         public static bool enableKeyHandler = false;
 
-        String audiodevice = null;
+        String AD1;
+        bool? UD2;
+        String AD2;
+        String TP;
+        bool? OB;
+
 
         protected override CreateParams CreateParams
         {
@@ -53,8 +59,15 @@ namespace CommsBot
 
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             UpdateButton(-1, true);//Initialize Button Names
-
             HandleHandlers();
+
+            SettingsFile file = new SettingsFile();
+            AD1 = file.AudioDevice();
+            UD2 = file.UseSecondAudioDevice();
+            AD2 = file.SecondAudioDevice();
+            TP = file.TreePath();
+            OB = file.HasBeenOpenedBefore();
+
 
         }
 
@@ -88,7 +101,7 @@ namespace CommsBot
         #region TopBar
         private void Close_MouseClick(object sender, MouseEventArgs e)
         {
-            this.Close();
+            Application.Exit();
         }
 
         private void Minimize_MouseClick(object sender, MouseEventArgs e)
@@ -353,7 +366,7 @@ namespace CommsBot
 
         private void volumeMeter1_Click(object sender, EventArgs e)
         {
-            //volumeMeter1.FlatAppeara
+
         }
 
         private void Settings_Click(object sender, EventArgs e)

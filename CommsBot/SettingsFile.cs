@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -60,10 +61,35 @@ namespace CommsBot
             catch (Exception e)
             {
                 Console.WriteLine("Exception: " + e.Message);
-                WriteSettings(null,null,null,null,null);
+                WriteSettings(DefaultAudioDevice(),null, DefaultAudioDevice(), null,null);
                 FetchSettings();
             }
 
+        }
+
+        private String DefaultAudioDevice()
+        {
+            try
+            {
+                return AudioDevicesList()[0];
+            }
+            catch
+            {
+                MessageBox.Show("Could not Fetch your audio devices","Error",MessageBoxButtons.OK);
+                return "0";
+            }
+        }
+
+        private List<string> AudioDevicesList()
+        {
+            List<String> devices = new List<String>();
+            for (int n = -1; n < WaveOut.DeviceCount; n++)
+            {
+                var caps = WaveOut.GetCapabilities(n);
+                Console.WriteLine($"{n}: {caps.ProductName}");
+            }
+
+            return devices;
         }
 
         public void WriteSettings(string a, string b, string c, string d, string e)

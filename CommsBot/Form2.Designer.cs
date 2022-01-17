@@ -77,6 +77,7 @@
             this.label1.Size = new System.Drawing.Size(112, 13);
             this.label1.TabIndex = 27;
             this.label1.Text = "Use this Audio Device";
+            this.label1.Click += new System.EventHandler(this.label3_Click_1);
             // 
             // checkBox1
             // 
@@ -103,7 +104,7 @@
             this.label3.Size = new System.Drawing.Size(70, 13);
             this.label3.TabIndex = 34;
             this.label3.Text = "Controls Tree";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
+            this.label3.Click += new System.EventHandler(this.label3_Click_1);
             // 
             // button2
             // 
@@ -134,6 +135,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(100, 23);
             this.label2.TabIndex = 38;
+            this.label2.Visible = false;
             // 
             // button1
             // 
@@ -155,6 +157,7 @@
             this.customComboBox1.Name = "customComboBox1";
             this.customComboBox1.Size = new System.Drawing.Size(121, 21);
             this.customComboBox1.TabIndex = 39;
+            this.customComboBox1.Visible = false;
             // 
             // comboBox1
             // 
@@ -194,6 +197,7 @@
             this.Opacity = 0.97D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form2";
+            this.Click += new System.EventHandler(this.Settings_Click);
             this.ResumeLayout(false);
             this.PerformLayout();
 
