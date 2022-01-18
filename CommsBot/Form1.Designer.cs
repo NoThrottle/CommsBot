@@ -34,6 +34,8 @@ namespace CommsBot
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.btn0 = new System.Windows.Forms.Button();
             this.btn1 = new System.Windows.Forms.Button();
             this.btn2 = new System.Windows.Forms.Button();
@@ -53,12 +55,16 @@ namespace CommsBot
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.volumeMeter1 = new NAudio.Gui.VolumeMeter();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.label3 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.Keyboard = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.Minimize = new System.Windows.Forms.Button();
             this.Settings = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.volumeMeter1 = new NAudio.Gui.VolumeMeter();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // btn0
@@ -212,7 +218,7 @@ namespace CommsBot
             this.btnplus.Name = "btnplus";
             this.btnplus.Size = new System.Drawing.Size(70, 70);
             this.btnplus.TabIndex = 10;
-            this.btnplus.Text = "Positate";
+            this.btnplus.Text = "Send";
             this.btnplus.UseVisualStyleBackColor = false;
             // 
             // btnminus
@@ -226,7 +232,7 @@ namespace CommsBot
             this.btnminus.Name = "btnminus";
             this.btnminus.Size = new System.Drawing.Size(70, 70);
             this.btnminus.TabIndex = 11;
-            this.btnminus.Text = "Negate";
+            this.btnminus.Text = "Invert";
             this.btnminus.UseVisualStyleBackColor = false;
             // 
             // btnmultiply
@@ -331,6 +337,68 @@ namespace CommsBot
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label2_MouseDown);
             // 
+            // label1
+            // 
+            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(23)))), ((int)(((byte)(23)))));
+            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.label1.Font = new System.Drawing.Font("Arial", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(15, 71);
+            this.label1.Margin = new System.Windows.Forms.Padding(0);
+            this.label1.Name = "label1";
+            this.label1.Padding = new System.Windows.Forms.Padding(0, 0, 10, 10);
+            this.label1.Size = new System.Drawing.Size(302, 65);
+            this.label1.TabIndex = 19;
+            this.label1.Text = "Type";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.label1.UseCompatibleTextRendering = true;
+            this.label1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label1_MouseDown);
+            // 
+            // volumeMeter1
+            // 
+            this.volumeMeter1.Amplitude = 0.1F;
+            this.volumeMeter1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(23)))), ((int)(((byte)(23)))));
+            this.volumeMeter1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.volumeMeter1.ImeMode = System.Windows.Forms.ImeMode.Off;
+            this.volumeMeter1.Location = new System.Drawing.Point(-1, 71);
+            this.volumeMeter1.Margin = new System.Windows.Forms.Padding(0);
+            this.volumeMeter1.MaxDb = 12F;
+            this.volumeMeter1.MinDb = -60F;
+            this.volumeMeter1.Name = "volumeMeter1";
+            this.volumeMeter1.Size = new System.Drawing.Size(17, 65);
+            this.volumeMeter1.TabIndex = 25;
+            this.volumeMeter1.Text = "volumeMeter1";
+            this.volumeMeter1.Click += new System.EventHandler(this.volumeMeter1_Click);
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 17;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.Silver;
+            this.label3.Location = new System.Drawing.Point(32, 17);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(67, 15);
+            this.label3.TabIndex = 27;
+            this.label3.Text = "CommsBot";
+            this.label3.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label3_MouseDown);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.BackgroundImage = global::CommsBot.Properties.Resources.smalllogo;
+            this.pictureBox1.InitialImage = global::CommsBot.Properties.Resources.smalllogo;
+            this.pictureBox1.Location = new System.Drawing.Point(8, 12);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(24, 24);
+            this.pictureBox1.TabIndex = 26;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label3_MouseDown);
+            // 
             // Keyboard
             // 
             this.Keyboard.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -383,39 +451,6 @@ namespace CommsBot
             this.Settings.UseVisualStyleBackColor = false;
             this.Settings.Click += new System.EventHandler(this.Settings_Click);
             // 
-            // label1
-            // 
-            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(23)))), ((int)(((byte)(23)))));
-            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.label1.Font = new System.Drawing.Font("Arial", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(15, 71);
-            this.label1.Margin = new System.Windows.Forms.Padding(0);
-            this.label1.Name = "label1";
-            this.label1.Padding = new System.Windows.Forms.Padding(0, 0, 10, 10);
-            this.label1.Size = new System.Drawing.Size(302, 65);
-            this.label1.TabIndex = 19;
-            this.label1.Text = "Type";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.label1.UseCompatibleTextRendering = true;
-            this.label1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label1_MouseDown);
-            // 
-            // volumeMeter1
-            // 
-            this.volumeMeter1.Amplitude = 0.1F;
-            this.volumeMeter1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(23)))), ((int)(((byte)(23)))));
-            this.volumeMeter1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.volumeMeter1.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.volumeMeter1.Location = new System.Drawing.Point(-1, 71);
-            this.volumeMeter1.Margin = new System.Windows.Forms.Padding(0);
-            this.volumeMeter1.MaxDb = 12F;
-            this.volumeMeter1.MinDb = -60F;
-            this.volumeMeter1.Name = "volumeMeter1";
-            this.volumeMeter1.Size = new System.Drawing.Size(17, 65);
-            this.volumeMeter1.TabIndex = 25;
-            this.volumeMeter1.Text = "volumeMeter1";
-            this.volumeMeter1.Click += new System.EventHandler(this.volumeMeter1_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -423,6 +458,8 @@ namespace CommsBot
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(19)))), ((int)(((byte)(19)))), ((int)(((byte)(19)))));
             this.ClientSize = new System.Drawing.Size(314, 530);
             this.ControlBox = false;
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Keyboard);
             this.Controls.Add(this.button5);
@@ -449,14 +486,17 @@ namespace CommsBot
             this.Controls.Add(this.btn0);
             this.Controls.Add(this.volumeMeter1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Opacity = 0.97D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "CommsBot";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -487,6 +527,9 @@ namespace CommsBot
         private System.Windows.Forms.Button Keyboard;
         private Label label1;
         private NAudio.Gui.VolumeMeter volumeMeter1;
+        private Timer timer1;
+        private PictureBox pictureBox1;
+        private Label label3;
     }
 }
 
