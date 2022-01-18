@@ -12,6 +12,11 @@ using System.Runtime.InteropServices;
 using System.IO;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using NAudio.CoreAudioApi;
+using CSCore.CoreAudioAPI;
+using MMDevice = CSCore.CoreAudioAPI.MMDevice;
+using static CommsBot.ext;
+using System.Diagnostics;
 
 namespace CommsBot
 {
@@ -35,13 +40,16 @@ namespace CommsBot
         public static bool typingcode; //add this later
         public static bool enableKeyHandler = false;
 
-        String AD1;
+        static String AD1;
         bool? UD2;
-        String AD2;
+        static String AD2;
         String TP;
         bool? OB;
 
-        List<System.Guid> audguid = new List<System.Guid>();
+        static List<System.Guid> audguid = new List<System.Guid>();
+        static List<string> audname = new List<string>();
+
+        bool IsPlayingAudio = false;
 
         protected override CreateParams CreateParams
         {
@@ -55,7 +63,6 @@ namespace CommsBot
 
         public Form1()
         {
-
             InitializeComponent();
 
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -69,12 +76,8 @@ namespace CommsBot
             TP = file.TreePath();
             OB = file.HasBeenOpenedBefore();
 
-
-
             AudioDevicesList();
             OnForeColorChanged(EventArgs.Empty);
-
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -85,11 +88,6 @@ namespace CommsBot
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             draggable();
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void label1_MouseDown(object sender, MouseEventArgs e)
@@ -140,7 +138,7 @@ namespace CommsBot
 
             string[] subdirs = Directory.GetDirectories(nextpath);
 
-            
+
             DirectoryInfo[] isempty = new DirectoryInfo(nextpath).GetDirectories();
 
             if (isempty.Length == 0)
@@ -150,10 +148,10 @@ namespace CommsBot
                 PlayList(globalpath);
                 //hold any updates to the button and lock them all
                 globalpath = home;
-                UpdateButton(12,  false);
+                UpdateButton(12, false);
                 return;
             }
-            
+
             UpdateLabels(globalpath, prehome, "hi");
 
             switch (id)
@@ -225,15 +223,15 @@ namespace CommsBot
 
             if (audiofiles.Length == 0) {
                 MessageBox.Show("There are no Audio files in this directory", "Note", MessageBoxButtons.OK);
-            } 
+            }
             else
             {
                 Random rnd = new Random();
-                playSound(ParseAD1Index(), audiofiles[rnd.Next(0, audiofiles.Length)]);
+                playSound(ParseAD1Index()-1, audiofiles[rnd.Next(0, audiofiles.Length)]);
 
                 if (UD2 == true)
                 {
-                    playSound(ParseAD1Index(), audiofiles[rnd.Next(0, audiofiles.Length)]);
+                    playSound(ParseAD2Index()-1, audiofiles[rnd.Next(0, audiofiles.Length)]);
 
                 }
             }
@@ -241,10 +239,11 @@ namespace CommsBot
 
         private void playSound(int deviceNumber, String path)
         {
-
+            timer1.Enabled = true;
             if (outputDevice == null)
             {
                 outputDevice = new WaveOutEvent() { DeviceNumber = deviceNumber };
+                volumeMeter1.Amplitude = outputDevice.Volume;
                 outputDevice.PlaybackStopped += OnPlaybackStopped;
             }
             if (audioFile == null)
@@ -252,32 +251,38 @@ namespace CommsBot
                 audioFile = new AudioFileReader(path);
                 outputDevice.Init(audioFile);
             }
-            outputDevice.Play();
 
+            outputDevice.Play();
+            IsPlayingAudio = true;
         }
 
         private void OnPlaybackStopped(object sender, StoppedEventArgs args)
         {
+            timer1.Enabled = false;
+            IsPlayingAudio = false;
             outputDevice.Dispose();
             outputDevice = null;
             audioFile.Dispose();
             audioFile = null;
         }
 
-        private void AudioDevicesList()
+        static private void AudioDevicesList()
         {
             List<System.Guid> ids = new List<System.Guid>();
+            List<string> nam = new List<string>();
             for (int n = -1; n < WaveOut.DeviceCount; n++)
             {
                 var caps = WaveOut.GetCapabilities(n);
                 Console.WriteLine($"{n}: {caps.ProductName}");
                 ids.Add(caps.ProductGuid);
+                nam.Add(caps.ProductName);
             }
 
             audguid = ids;
+            audname = nam;
         }
 
-        private int ParseAD1Index()
+        static private int ParseAD1Index()
         {
             int i = 0;
             while (i != audguid.Count)
@@ -288,7 +293,7 @@ namespace CommsBot
                 }
                 else
                 {
-                    return i-1;
+                    return i;
                 }
             }
 
@@ -296,7 +301,7 @@ namespace CommsBot
             return 0;
         }
 
-        private int ParseAD2Index()
+        static private int ParseAD2Index()
         {
             int i = 0;
             while (i != audguid.Count)
@@ -307,7 +312,7 @@ namespace CommsBot
                 }
                 else
                 {
-                    return i-1;
+                    return i - 1;
                 }
             }
 
@@ -317,12 +322,11 @@ namespace CommsBot
 
         #endregion //----------------------
 
-
         private void UpdateLabels(String endpath, String prehome, String large)
         {
 
             label2.Text = String.Join(" > ", endpath.Substring(prehome.Length + 1).Split('\\', '/'));
-            label1.Text = endpath.Split('\\', '/')[endpath.Split('\\', '/').Count()-1];
+            label1.Text = endpath.Split('\\', '/')[endpath.Split('\\', '/').Count() - 1];
 
         }
 
@@ -382,23 +386,23 @@ namespace CommsBot
             List<String> names = subdirsname;
             int i = 0;
 
-            if (subdirsname.Count >= 1) { btn1.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i-1]); btn1.Enabled = true; }
+            if (subdirsname.Count >= 1) { btn1.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i - 1]); btn1.Enabled = true; }
             else { btn1.Text = "1"; btn1.Enabled = false; }
-            if (subdirsname.Count >= 2) { btn2.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i-1]); btn2.Enabled = true; }
+            if (subdirsname.Count >= 2) { btn2.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i - 1]); btn2.Enabled = true; }
             else { btn2.Text = "2"; btn2.Enabled = false; }
-            if (subdirsname.Count >= 3) { btn3.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i-1]); btn3.Enabled = true; }
+            if (subdirsname.Count >= 3) { btn3.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i - 1]); btn3.Enabled = true; }
             else { btn3.Text = "3"; btn3.Enabled = false; }
-            if (subdirsname.Count >= 4) { btn4.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i-1]); btn4.Enabled = true; }
+            if (subdirsname.Count >= 4) { btn4.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i - 1]); btn4.Enabled = true; }
             else { btn4.Text = "4"; btn4.Enabled = false; }
-            if (subdirsname.Count >= 5) { btn5.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i-1]); btn5.Enabled = true; }
+            if (subdirsname.Count >= 5) { btn5.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i - 1]); btn5.Enabled = true; }
             else { btn5.Text = "5"; btn5.Enabled = false; }
-            if (subdirsname.Count >= 6) { btn6.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i-1]); btn6.Enabled = true; }
+            if (subdirsname.Count >= 6) { btn6.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i - 1]); btn6.Enabled = true; }
             else { btn6.Text = "6"; btn6.Enabled = false; }
-            if (subdirsname.Count >= 7) { btn7.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i-1]); btn7.Enabled = true; }
+            if (subdirsname.Count >= 7) { btn7.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i - 1]); btn7.Enabled = true; }
             else { btn7.Text = "7"; btn7.Enabled = false; }
-            if (subdirsname.Count >= 8) { btn8.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i-1]); btn8.Enabled = true; }
+            if (subdirsname.Count >= 8) { btn8.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i - 1]); btn8.Enabled = true; }
             else { btn8.Text = "8"; btn8.Enabled = false; }
-            if (subdirsname.Count >= 9) { btn9.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i-1]); btn9.Enabled = true; }
+            if (subdirsname.Count >= 9) { btn9.Text = subdirsname[i]; i++; Console.WriteLine(i + ": " + subdirsname[i - 1]); btn9.Enabled = true; }
             else { btn9.Text = "9"; btn9.Enabled = false; }
 
         }
@@ -433,94 +437,162 @@ namespace CommsBot
             this.Close();
         }
 
-
-        Brush foregroundBrush;
-
-        protected override void OnForeColorChanged(EventArgs e)
+        private void label3_MouseDown(object sender, MouseEventArgs e)
         {
-            foregroundBrush = new SolidBrush(ForeColor);
-            base.OnForeColorChanged(e);
+            draggable();
         }
 
-        protected override void OnPaint(PaintEventArgs pe)
+
+        #region Volume Meter
+        private void timer1_Tick(object sender, EventArgs e)
         {
-            //base.OnPaint(pe);
-            pe.Graphics.DrawRectangle(Pens.Black, 0, 0, this.Width - 1, this.Height - 1);
-            double db = 20 * Math.Log10(volumeMeter1.Amplitude);
+            //if (IsPlayingAudio)
+            //{
+            Console.WriteLine("tick");
+            Task.Run(() => getVolumes());
+            //}
+        }
 
-            if (db < this.volumeMeter1.MinDb)
-
-                db = volumeMeter1.MinDb;
-
-            if (db > volumeMeter1.MaxDb)
-
-                db = volumeMeter1.MaxDb;
-
-            double percent = (db - volumeMeter1.MinDb) / (volumeMeter1.MaxDb - volumeMeter1.MinDb);
-            int width = this.Width - 2;
-
-            int height = this.Height - 2;
-
-            if (volumeMeter1.Orientation == Orientation.Horizontal)
-
+        private static AudioSessionManager2 GetDefaultAudioSessionManager2(CSCore.CoreAudioAPI.DataFlow dataFlow)
+        {
+            using (var enumerator = new CSCore.CoreAudioAPI.MMDeviceEnumerator())
             {
+                using (var device = (MMDevice)ParseMMDevice() /*GetDefaultAudioEndpoint(dataFlow, CSCore.CoreAudioAPI.Role.Multimedia)*/)
+                {
+                    Console.WriteLine("DefaultDevice: " + device.FriendlyName);
+                    var sessionManager = AudioSessionManager2.FromMMDevice(device);
+                    return sessionManager;
+                }
+            }
+        }
 
-                width = (int)(width * percent);
-                pe.Graphics.FillRectangle(foregroundBrush, 1, 1, width, height);
+        private void getVolumes()
+        {
+            using (var sessionManager = GetDefaultAudioSessionManager2(CSCore.CoreAudioAPI.DataFlow.Render))
+            using (var sessionEnumerator = sessionManager.GetSessionEnumerator())
+            {
+                foreach (var session in sessionEnumerator)
+                {
+                    //Assert.IsNotNull(session);
+
+                    using (var session2 = session.QueryInterface<AudioSessionControl2>())
+                    using (var audioMeterInformation = session.QueryInterface<CSCore.CoreAudioAPI.AudioMeterInformation>())
+                    {
+                        //Console.WriteLine("Process: {0}; Peak: {1:P}",
+                        //    session2.Process == null ? String.Empty : session2.Process.MainWindowTitle,
+                        //    audioMeterInformation.GetPeakValue() * 100);
+
+                            if (session2.Process.ProcessName == Process.GetCurrentProcess().ProcessName)
+                            {
+                                volumeMeter1.Amplitude = audioMeterInformation.GetPeakValue();
+                            }
+                    }
+                }
+            }
+        }
+
+        static public CSCore.CoreAudioAPI.MMDevice ParseMMDevice()
+        {
+            AudioDevicesList();
+            CSCore.CoreAudioAPI.MMDeviceEnumerator enumerator = new CSCore.CoreAudioAPI.MMDeviceEnumerator();
+            var devices = enumerator.EnumAudioEndpoints(CSCore.CoreAudioAPI.DataFlow.All, CSCore.CoreAudioAPI.DeviceState.Active);
+
+            //int i = 0;
+
+            List<String> devcut = new List<string>();
+            List<String> audcut = new List<string>();
+
+            foreach (var device in devices)
+            {
+                Console.WriteLine(device);
+                if (device != null)
+                {
+                    devcut.Add(String.Concat(device.FriendlyName.ToString().Spill(32).Where(c => !Char.IsWhiteSpace(c))));
+                }
             }
 
-            else
+            foreach (var audnam in audname)
             {
-                height = (int)(height * percent);
-                pe.Graphics.FillRectangle(foregroundBrush, 1, this.Height - 1 - height, width, height);
+                Console.WriteLine(audname[ParseAD1Index()]);
+                audcut.Add(String.Concat(audname[ParseAD1Index()].Where(c => !Char.IsWhiteSpace(c))));
+            }
+
+            foreach (var device in devices)
+            {
+
+                if (String.Concat(device.FriendlyName.ToString().Spill(31).Where(c => !Char.IsWhiteSpace(c))) ==
+                            String.Concat(audname[ParseAD1Index()].Where(c => !Char.IsWhiteSpace(c)))
+                       )
+                {
+                    return device;
+                }
+                else
+                {
+                    Console.WriteLine(String.Concat(device.FriendlyName.ToString().Spill(32).Where(c => !Char.IsWhiteSpace(c))));
+                    Console.WriteLine(String.Concat(audname[ParseAD1Index()].Where(c => !Char.IsWhiteSpace(c))));
+                    Console.WriteLine("Failed");
+                    //i++;
+                }
 
             }
 
+            MessageBox.Show("Unable to update volume meter to " + AD1 + " . Reading first registered device instead which may be inaccurate.", "Error", MessageBoxButtons.OK);
+            return devices[0];
+
         }
+        #endregion
+
+        #region Handle Keypress
+        //HandlesKeyPress
+        public static class Constants
+        {
+            //windows message id for hotkey
+            public const int WM_HOTKEY_MSG_ID = 0x0312;
+        }
+
+        public class KeyHandler
+        {
+            [DllImport("user32.dll")]
+            private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+
+            [DllImport("user32.dll")]
+            private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+            private int key;
+            private IntPtr hWnd;
+            private int id;
+
+            public KeyHandler(Keys key, Form form)
+            {
+                this.key = (int)key;
+                this.hWnd = form.Handle;
+                this.id = this.GetHashCode();
+            }
+
+            public override int GetHashCode()
+            {
+                return key ^ hWnd.ToInt32();
+            }
+
+            public bool Register(int id)
+            {
+                return RegisterHotKey(hWnd, id, 0, key);
+            }
+
+            public bool Unregister(int id)
+            {
+                return UnregisterHotKey(hWnd, id);
+            }
+        }
+        #endregion
     }
 
-    #region Handle Keypress
-    //HandlesKeyPress
-    public static class Constants
+    //Extensions
+    public static class ext
     {
-        //windows message id for hotkey
-        public const int WM_HOTKEY_MSG_ID = 0x0312;
-    }
-
-    public class KeyHandler
-    {
-        [DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
-
-        [DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-
-        private int key;
-        private IntPtr hWnd;
-        private int id;
-
-        public KeyHandler(Keys key, Form form)
+        public static string Spill(this string value, int maxChars)
         {
-            this.key = (int)key;
-            this.hWnd = form.Handle;
-            this.id = this.GetHashCode();
-        }
-
-        public override int GetHashCode()
-        {
-            return key ^ hWnd.ToInt32();
-        }
-
-        public bool Register(int id)
-        {
-            return RegisterHotKey(hWnd, id, 0, key);
-        }
-
-        public bool Unregister(int id)
-        {
-            return UnregisterHotKey(hWnd, id);
+            return value.Length <= maxChars ? value : value.Substring(0, maxChars);
         }
     }
-    #endregion
-
 }

@@ -33,12 +33,13 @@ namespace CommsBot
         String TP;
         bool? OB;
 
-        bool ThereIsChange = false;
+        bool ThereIsChange;
 
         List<System.Guid> audguid = new List<System.Guid>();
 
         public Settings()
         {
+
             InitializeComponent();
 
             SettingsFile file = new SettingsFile();
@@ -67,6 +68,7 @@ namespace CommsBot
             comboBox1.SelectedIndex = ParseAD1Index();
             customComboBox1.SelectedIndex = ParseAD2Index();
 
+            ThereIsChange = false;
             button1.Enabled = false;
         }
 
@@ -324,7 +326,7 @@ namespace CommsBot
         private void button5_Click(object sender, EventArgs e)
         {
 
-            if (ThereIsChange)
+            if (ThereIsChange == true)
             {
                 DialogResult result = MessageBox.Show("There are unsaved changes. Discard Changes?", "Warning", MessageBoxButtons.YesNo);
 
@@ -365,6 +367,11 @@ namespace CommsBot
         }
 
         private void Settings_MouseDown(object sender, MouseEventArgs e)
+        {
+            draggable();
+        }
+
+        private void label4_MouseDown(object sender, MouseEventArgs e)
         {
             draggable();
         }
