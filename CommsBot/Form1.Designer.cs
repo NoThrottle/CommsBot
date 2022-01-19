@@ -356,16 +356,16 @@ namespace CommsBot
             // 
             // volumeMeter1
             // 
-            this.volumeMeter1.Amplitude = 0.1F;
+            this.volumeMeter1.Amplitude = 0F;
             this.volumeMeter1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(23)))), ((int)(((byte)(23)))));
             this.volumeMeter1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.volumeMeter1.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.volumeMeter1.Location = new System.Drawing.Point(-1, 71);
+            this.volumeMeter1.Location = new System.Drawing.Point(-1, 68);
             this.volumeMeter1.Margin = new System.Windows.Forms.Padding(0);
             this.volumeMeter1.MaxDb = 12F;
             this.volumeMeter1.MinDb = -60F;
             this.volumeMeter1.Name = "volumeMeter1";
-            this.volumeMeter1.Size = new System.Drawing.Size(17, 65);
+            this.volumeMeter1.Size = new System.Drawing.Size(17, 69);
             this.volumeMeter1.TabIndex = 25;
             this.volumeMeter1.Text = "volumeMeter1";
             this.volumeMeter1.Click += new System.EventHandler(this.volumeMeter1_Click);

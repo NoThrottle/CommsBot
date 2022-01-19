@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
@@ -78,7 +79,6 @@ namespace CommsBot
             OB = file.HasBeenOpenedBefore();
 
             AudioDevicesList();
-            OnForeColorChanged(EventArgs.Empty);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -255,11 +255,10 @@ namespace CommsBot
         {
 
             Console.WriteLine("Playsound");
-            timer1.Enabled = true;
 
             if (outputDevice == null)
             {
-                outputDevice = new NAudio.Wave.WaveOutEvent() { DeviceNumber = deviceNumber };
+                outputDevice = new WaveOutEvent() { DeviceNumber = deviceNumber };
                 outputDevice.PlaybackStopped += OnPlaybackStopped;
                 Console.WriteLine("outdev null");
 
@@ -288,14 +287,16 @@ namespace CommsBot
 
             }
 
-            //outputDevice.Init(audioFile);
             outputDevice.Play();
+            timer1.Start();
             Console.WriteLine("Play");
             IsPlayingAudio = true;
         }
 
         private void OnPlaybackStopped(object sender, StoppedEventArgs args)
         {
+            timer1.Stop();
+            volumeMeter1.Amplitude = 0;
             Console.WriteLine("Play stopped called");
 
             if ((audioFile != null) && (outputDevice != null))
@@ -306,7 +307,7 @@ namespace CommsBot
                 audioFile.Dispose();
                 audioFile = null;
 
-                timer1.Enabled = false;
+
                 IsPlayingAudio = false;
                 StopQueued = false;
                 Console.WriteLine("Playstop conditions met");
@@ -499,6 +500,17 @@ namespace CommsBot
             //{
 
             //Console.WriteLine("tick");
+            var source = new CancellationTokenSource();
+            Task mine = Task.Run(() => {
+                getVolumes();
+                source.Cancel();
+                }
+            );
+
+            if (source.IsCancellationRequested)
+            {
+                mine.Dispose();
+            }
             //Task.Run(() => getVolumes());
             //}
         }
@@ -514,6 +526,7 @@ namespace CommsBot
                     return sessionManager;
                 }
             }
+
         }
 
         private void getVolumes()
@@ -539,6 +552,7 @@ namespace CommsBot
                     }
                 }
             }
+
         }
 
         static public CSCore.CoreAudioAPI.MMDevice ParseMMDevice()
