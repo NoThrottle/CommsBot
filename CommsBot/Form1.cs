@@ -277,15 +277,6 @@ namespace CommsBot
                 Console.WriteLine("audfile null");
 
             }
-            else
-            {
-                audioFile.Dispose();
-                audioFile = null;
-                audioFile = new AudioFileReader(path);
-                outputDevice.Init(audioFile);
-                Console.WriteLine("audfile not null");
-
-            }
 
             outputDevice.Play();
             timer1.Start();
