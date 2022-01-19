@@ -49,7 +49,7 @@ namespace CommsBot
         static List<System.Guid> audguid = new List<System.Guid>();
         static List<string> audname = new List<string>();
 
-        bool IsPlayingAudio = false;
+        static bool IsPlayingAudio = false;
 
         protected override CreateParams CreateParams
         {
@@ -200,6 +200,12 @@ namespace CommsBot
                     btnminus.Text = "hi";
                     break;
                 case 12:
+                    if (IsPlayingAudio)
+                    {
+                        playSound(0, "", false);
+                        timer1.Enabled = false;
+
+                    }
                     globalpath = home;
                     UpdateButton(-1, false);
                     break;
@@ -227,33 +233,51 @@ namespace CommsBot
             else
             {
                 Random rnd = new Random();
-                playSound(ParseAD1Index()-1, audiofiles[rnd.Next(0, audiofiles.Length)]);
+                playSound(ParseAD1Index()-1, audiofiles[rnd.Next(0, audiofiles.Length)], false);
 
                 if (UD2 == true)
                 {
-                    playSound(ParseAD2Index()-1, audiofiles[rnd.Next(0, audiofiles.Length)]);
+                    playSound(ParseAD2Index()-1, audiofiles[rnd.Next(0, audiofiles.Length)], false);
 
                 }
             }
         }
 
-        private void playSound(int deviceNumber, String path)
+        private void playSound(int deviceNumber, String path, bool stop)
         {
-            timer1.Enabled = true;
-            if (outputDevice == null)
-            {
-                outputDevice = new WaveOutEvent() { DeviceNumber = deviceNumber };
-                volumeMeter1.Amplitude = outputDevice.Volume;
-                outputDevice.PlaybackStopped += OnPlaybackStopped;
-            }
-            if (audioFile == null)
-            {
-                audioFile = new AudioFileReader(path);
-                outputDevice.Init(audioFile);
-            }
 
-            outputDevice.Play();
-            IsPlayingAudio = true;
+            if ((stop) && (IsPlayingAudio)) 
+            {
+                
+                 outputDevice.Stop();
+                
+            }
+            else if ((stop == false) && (IsPlayingAudio == false))
+            {
+                timer1.Enabled = true;
+                if (outputDevice == null)
+                {
+                    outputDevice = new WaveOutEvent() { DeviceNumber = deviceNumber };
+                    outputDevice.PlaybackStopped += OnPlaybackStopped;
+                }
+                if (audioFile == null)
+                {
+                    audioFile = new AudioFileReader(path);
+                    outputDevice.Init(audioFile);
+                }
+
+                outputDevice.Play();
+                IsPlayingAudio = true;
+            }
+            else if ((stop) && (IsPlayingAudio = false))
+            {
+                Console.WriteLine("Cannot stop sound while there is no sound.");
+            }
+            else
+            {
+                Console.WriteLine("Cannot play sound while current one has not finished.");
+
+            }
         }
 
         private void OnPlaybackStopped(object sender, StoppedEventArgs args)
