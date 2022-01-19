@@ -25,7 +25,7 @@ gonna add this later
 - This is the only website where I officially release updates and downloads. Since the code is open for anyone to use, there may be more versions of this made by other people. Their versions are fine but make sure you are not downloading malware.
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Contributors will have a different license to manage any possible future license changes.
 
 Please make sure to update tests as appropriate.
 
