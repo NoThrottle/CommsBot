@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommsBot", "CommsBot\CommsBot.csproj", "{BF5B355D-1D94-4B3A-A1B3-99016966A2E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{5E223CB7-737D-4D30-977F-19F16BB82F19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{BF5B355D-1D94-4B3A-A1B3-99016966A2E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF5B355D-1D94-4B3A-A1B3-99016966A2E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF5B355D-1D94-4B3A-A1B3-99016966A2E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E223CB7-737D-4D30-977F-19F16BB82F19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E223CB7-737D-4D30-977F-19F16BB82F19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E223CB7-737D-4D30-977F-19F16BB82F19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E223CB7-737D-4D30-977F-19F16BB82F19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
