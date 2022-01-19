@@ -49,7 +49,8 @@ namespace CommsBot
         static List<System.Guid> audguid = new List<System.Guid>();
         static List<string> audname = new List<string>();
 
-        static bool IsPlayingAudio = false;
+        private bool IsPlayingAudio = false;
+        bool StopQueued = false;
 
         protected override CreateParams CreateParams
         {
@@ -148,7 +149,7 @@ namespace CommsBot
                 PlayList(globalpath);
                 //hold any updates to the button and lock them all
                 globalpath = home;
-                UpdateButton(12, false);
+                UpdateButton(-2, false);
                 return;
             }
 
@@ -157,7 +158,8 @@ namespace CommsBot
             switch (id)
             {
                 case -2:
-                    //Reset Values
+                    globalpath = home;
+                    UpdateButton(-1, false);
                     break;
                 case -1:
                     //Initialization/Updating Only
@@ -200,14 +202,14 @@ namespace CommsBot
                     btnminus.Text = "hi";
                     break;
                 case 12:
-                    if (IsPlayingAudio)
+                    Console.WriteLine("pressed reset");
+                    if ((outputDevice != null) && (StopQueued != true))
                     {
-                        playSound(0, "", false);
-                        timer1.Enabled = false;
-
+                        outputDevice.Stop();
+                        StopQueued = true;
                     }
                     globalpath = home;
-                    UpdateButton(-1, false);
+                    UpdateButton(-2, false);
                     break;
                 case 13:
                     btndivide.Text = "hi";
@@ -232,62 +234,85 @@ namespace CommsBot
             }
             else
             {
-                Random rnd = new Random();
-                playSound(ParseAD1Index()-1, audiofiles[rnd.Next(0, audiofiles.Length)], false);
-
-                if (UD2 == true)
+                if (IsPlayingAudio == false)
                 {
-                    playSound(ParseAD2Index()-1, audiofiles[rnd.Next(0, audiofiles.Length)], false);
+                    Console.WriteLine("isplaying false, playing audio");
 
+                    Random rnd = new Random();
+                    playSound(ParseAD1Index() - 1, audiofiles[rnd.Next(0, audiofiles.Length)]);
+
+                    if (UD2 == true)
+                    {
+                        playSound(ParseAD2Index() - 1, audiofiles[rnd.Next(0, audiofiles.Length)]);
+
+                    }
                 }
+                
             }
         }
 
-        private void playSound(int deviceNumber, String path, bool stop)
+        private void playSound(int deviceNumber, String path)
         {
 
-            if ((stop) && (IsPlayingAudio)) 
-            {
-                
-                 outputDevice.Stop();
-                
-            }
-            else if ((stop == false) && (IsPlayingAudio == false))
-            {
-                timer1.Enabled = true;
-                if (outputDevice == null)
-                {
-                    outputDevice = new WaveOutEvent() { DeviceNumber = deviceNumber };
-                    outputDevice.PlaybackStopped += OnPlaybackStopped;
-                }
-                if (audioFile == null)
-                {
-                    audioFile = new AudioFileReader(path);
-                    outputDevice.Init(audioFile);
-                }
+            Console.WriteLine("Playsound");
+            timer1.Enabled = true;
 
-                outputDevice.Play();
-                IsPlayingAudio = true;
-            }
-            else if ((stop) && (IsPlayingAudio = false))
+            if (outputDevice == null)
             {
-                Console.WriteLine("Cannot stop sound while there is no sound.");
+                outputDevice = new NAudio.Wave.WaveOutEvent() { DeviceNumber = deviceNumber };
+                outputDevice.PlaybackStopped += OnPlaybackStopped;
+                Console.WriteLine("outdev null");
+
             }
             else
             {
-                Console.WriteLine("Cannot play sound while current one has not finished.");
+                outputDevice.PlaybackStopped += OnPlaybackStopped;
+                Console.WriteLine("outdev not null");
 
             }
+
+            if (audioFile == null)
+            {
+                audioFile = new AudioFileReader(path);
+                outputDevice.Init(audioFile);
+                Console.WriteLine("audfile null");
+
+            }
+            else
+            {
+                audioFile.Dispose();
+                audioFile = null;
+                audioFile = new AudioFileReader(path);
+                outputDevice.Init(audioFile);
+                Console.WriteLine("audfile not null");
+
+            }
+
+            //outputDevice.Init(audioFile);
+            outputDevice.Play();
+            Console.WriteLine("Play");
+            IsPlayingAudio = true;
         }
 
         private void OnPlaybackStopped(object sender, StoppedEventArgs args)
         {
-            timer1.Enabled = false;
-            IsPlayingAudio = false;
-            outputDevice.Dispose();
-            outputDevice = null;
-            audioFile.Dispose();
-            audioFile = null;
+            Console.WriteLine("Play stopped called");
+
+            if ((audioFile != null) && (outputDevice != null))
+            {
+                outputDevice.Stop();
+                outputDevice.Dispose();
+                outputDevice = null;
+                audioFile.Dispose();
+                audioFile = null;
+
+                timer1.Enabled = false;
+                IsPlayingAudio = false;
+                StopQueued = false;
+                Console.WriteLine("Playstop conditions met");
+
+            }
+
         }
 
         static private void AudioDevicesList()
@@ -472,8 +497,9 @@ namespace CommsBot
         {
             //if (IsPlayingAudio)
             //{
-            Console.WriteLine("tick");
-            Task.Run(() => getVolumes());
+
+            //Console.WriteLine("tick");
+            //Task.Run(() => getVolumes());
             //}
         }
 
