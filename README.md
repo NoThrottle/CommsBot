@@ -14,7 +14,7 @@ It's basically a sound pad for gamers. Use your numpad when you don't want to us
 
 ## Note 
 
-- These program is very much in development. It only runs on Windows, and is in beta (right now). However, I am confident with my current progress and that it will run in most computers. That is why you can  download it here!
+- This program is very much in development. It only runs on Windows, and is in beta (right now). However, I am confident with my current progress and that it will run in most computers. That is why you can  download it here!
 - The soundpad only plays Wave (.wav) audio files. Other formats will be supported in the future.
 - If a release doesn't work, i suggest you to try building the project on your pc.
 
