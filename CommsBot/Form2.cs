@@ -190,10 +190,14 @@ namespace CommsBot
                 this.label3.Location = new System.Drawing.Point(6, 174);
 
                 // Path Textbox Post Location
-                this.textBox2.Location = new System.Drawing.Point(9, 190);
+                this.textBox2.Location = new System.Drawing.Point(12, 195);
 
                 //Browse Button Post Location
                 this.button2.Location = new System.Drawing.Point(302, 190);
+
+                //Path TextBox Background Post Location
+                this.textBox1.Location = new Point(9, 190);
+
 
                 this.Size = new Size(366, 282);
 
@@ -209,10 +213,12 @@ namespace CommsBot
 
                 this.button1.Location = new System.Drawing.Point(282, 197);
                 this.label3.Location = new System.Drawing.Point(6, 125);
-                this.textBox2.Location = new System.Drawing.Point(9, 141);
+                this.textBox2.Location = new System.Drawing.Point(12, 145);
                 this.button2.Location = new System.Drawing.Point(302, 141);
 
                 this.Size = new Size(366, 232);
+
+                this.textBox1.Location = new Point(9, 141);
 
                 ReallyCenterToScreen();
 
