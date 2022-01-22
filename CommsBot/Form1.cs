@@ -54,7 +54,9 @@ namespace CommsBot
         bool StopQueued = false;
 
         //Handles MessageBoxes so they don't spam
-        static bool MB01 = false; //User knows to play the audio to default audio output.
+        private static bool MB01 = false; //User knows Volume Meter is Incorrect
+        private static bool MB02 = false; //User knows Audio is played to Deafult Device for dev1
+        private static bool MB03 = false; //User knows Audio is played to Deafult Device for dev2
 
         protected override CreateParams CreateParams
         {
@@ -290,6 +292,7 @@ namespace CommsBot
             timer1.Stop();
             volumeMeter1.Amplitude = 0;
             Console.WriteLine("Play stopped called");
+            ResetMessageBoxLimits();
 
             if ((audioFile != null) && (outputDevice != null))
             {
@@ -337,8 +340,12 @@ namespace CommsBot
                 }
                 i++;
             }
-
-            MessageBox.Show("Previously Set Audio Device 1 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+            
+            if (MB02 == false)
+            {
+                MessageBox.Show("Previously Set Audio Device 1 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+                MB02 = true;
+            }
             return 0;
         }
 
@@ -356,8 +363,19 @@ namespace CommsBot
                 i++;
             }
 
-            MessageBox.Show("Previously Set Audio Device 2 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+            if (MB03 == false)
+            {
+                MessageBox.Show("Previously Set Audio Device 2 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+                MB03 = true;
+            }
             return 0;
+        }
+
+        private void ResetMessageBoxLimits()
+        {
+            MB01 = false;
+            MB02 = false;
+            MB03 = false;
         }
 
         #endregion //----------------------
@@ -458,8 +476,6 @@ namespace CommsBot
             base.WndProc(ref m);
         }
 
-        //Draggable any object
-
         #region Draggable
         private void draggable()
         {
@@ -496,6 +512,10 @@ namespace CommsBot
 
         }
         private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }
@@ -608,7 +628,12 @@ namespace CommsBot
 
             }
 
-            MessageBox.Show("Unable to update volume meter to " + AD1 + " . Reading first registered device instead which may be inaccurate.", "Error", MessageBoxButtons.OK);
+            if (MB01 == false)
+            {
+                MessageBox.Show("Unable to update volume meter to " + AD1 + 
+                    " . Reading first registered device instead which may be inaccurate.", "Error", MessageBoxButtons.OK);
+                MB01 = true;
+            }
             return devices[0];
 
         }
@@ -658,10 +683,7 @@ namespace CommsBot
         }
         #endregion
 
-        private void label1_Click(object sender, EventArgs e)
-        {
 
-        }
     }
 
     //Extensions
