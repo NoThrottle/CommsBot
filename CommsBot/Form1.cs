@@ -66,6 +66,8 @@ namespace CommsBot
         public Form1()
         {
             InitializeComponent();
+            timer1.Stop();//Incase it starts up rougely
+            enableKeyHandler = false;
 
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             UpdateButton(-1, true);//Initialize Button Names
@@ -230,7 +232,11 @@ namespace CommsBot
             string[] audiofiles = Directory.GetFiles(path);
 
             if (audiofiles.Length == 0) {
-                MessageBox.Show("There are no Audio files in this directory", "Note", MessageBoxButtons.OK);
+
+                //MessageBox.Show("There are no Audio files in this directory", "Note", MessageBoxButtons.OK);
+                label2.Text = "No Audio Files in this Directory";
+                label1.Text = "No Audio";
+                Thread.Sleep(1500);
             }
             else
             {
@@ -243,6 +249,7 @@ namespace CommsBot
 
                     if (UD2 == true)
                     {
+                        Console.WriteLine("Playing on 2nd Device");
                         playSound(ParseAD2Index() - 1, audiofiles[rnd.Next(0, audiofiles.Length)]);
 
                     }
@@ -326,16 +333,15 @@ namespace CommsBot
         static private int ParseAD1Index()
         {
             int i = 0;
-            while (i != audguid.Count)
+
+            foreach (System.Guid id in audguid)
             {
-                if (audguid[i] != Guid.Parse(AD1))
-                {
-                    i++;
-                }
-                else
+                if (id == Guid.Parse(AD1))
                 {
                     return i;
+
                 }
+                i++;
             }
 
             MessageBox.Show("Previously Set Audio Device 1 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
@@ -345,16 +351,15 @@ namespace CommsBot
         static private int ParseAD2Index()
         {
             int i = 0;
-            while (i != audguid.Count)
+
+            foreach (System.Guid id in audguid)
             {
-                if (audguid[i] != Guid.Parse(AD2))
+                if (id == Guid.Parse(AD2))
                 {
-                    i++;
+                    return i;
+
                 }
-                else
-                {
-                    return i - 1;
-                }
+                i++;
             }
 
             MessageBox.Show("Previously Set Audio Device 2 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
@@ -473,6 +478,12 @@ namespace CommsBot
 
         private void Settings_Click(object sender, EventArgs e)
         {
+            if ((outputDevice != null) && (StopQueued != true))
+            {
+                outputDevice.Stop();
+                StopQueued = true;
+            }
+
             Settings settings = new Settings();
             settings.Show();
             this.Close();
@@ -559,7 +570,7 @@ namespace CommsBot
 
             foreach (var device in devices)
             {
-                Console.WriteLine(device);
+                //Console.WriteLine(device);
                 if (device != null)
                 {
                     devcut.Add(String.Concat(device.FriendlyName.ToString().Spill(32).Where(c => !Char.IsWhiteSpace(c))));
@@ -568,7 +579,7 @@ namespace CommsBot
 
             foreach (var audnam in audname)
             {
-                Console.WriteLine(audname[ParseAD1Index()]);
+                //Console.WriteLine(audname[ParseAD1Index()]);
                 audcut.Add(String.Concat(audname[ParseAD1Index()].Where(c => !Char.IsWhiteSpace(c))));
             }
 
@@ -586,7 +597,6 @@ namespace CommsBot
                     Console.WriteLine(String.Concat(device.FriendlyName.ToString().Spill(32).Where(c => !Char.IsWhiteSpace(c))));
                     Console.WriteLine(String.Concat(audname[ParseAD1Index()].Where(c => !Char.IsWhiteSpace(c))));
                     Console.WriteLine("Failed");
-                    //i++;
                 }
 
             }
@@ -640,6 +650,11 @@ namespace CommsBot
             }
         }
         #endregion
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
     //Extensions

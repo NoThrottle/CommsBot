@@ -95,7 +95,7 @@ namespace CommsBot
             for (int n = -1; n < WaveOut.DeviceCount; n++)
             {
                 var caps = WaveOut.GetCapabilities(n);
-                Console.WriteLine($"{n}: {caps.ProductName}");
+                //Console.WriteLine($"{n}: {caps.ProductName}");
                 devices.Add(caps.ProductGuid.ToString());
             }
 
@@ -122,7 +122,7 @@ namespace CommsBot
             catch (Exception z)
             {
                 Console.WriteLine("Exception: " + z.Message);
-                MessageBox.Show("Can't Write the Settings File" + "/n" + "Exception: " + z.Message, "Error", MessageBoxButtons.OK);
+                MessageBox.Show("Can't Write the Settings File" + "\r\n" + "Exception: " + z.Message, "Error", MessageBoxButtons.OK);
             }
         }
 
