@@ -103,6 +103,19 @@ namespace CommsBot
 
         }
 
+        private void Settings_Click(object sender, EventArgs e)
+        {
+            if ((outputDevice != null) && (StopQueued != true))
+            {
+                outputDevice.Stop();
+                StopQueued = true;
+            }
+
+            Settings settings = new Settings();
+            settings.Show();
+            this.Close();
+        }
+
         #endregion
 
         private void UpdateButton(int id, Boolean check)
@@ -454,6 +467,11 @@ namespace CommsBot
             SendMessage(this.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
         }
 
+        private void label3_MouseDown(object sender, MouseEventArgs e)
+        {
+            draggable();
+        }
+
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             draggable();
@@ -483,25 +501,6 @@ namespace CommsBot
         }
 
         #endregion
-
-        private void Settings_Click(object sender, EventArgs e)
-        {
-            if ((outputDevice != null) && (StopQueued != true))
-            {
-                outputDevice.Stop();
-                StopQueued = true;
-            }
-
-            Settings settings = new Settings();
-            settings.Show();
-            this.Close();
-        }
-
-        private void label3_MouseDown(object sender, MouseEventArgs e)
-        {
-            draggable();
-        }
-
 
         #region Volume Meter
         private void timer1_Tick(object sender, EventArgs e)
