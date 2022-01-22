@@ -53,6 +53,9 @@ namespace CommsBot
         private bool IsPlayingAudio = false;
         bool StopQueued = false;
 
+        //Handles MessageBoxes so they don't spam
+        static bool MB01 = false; //User knows to play the audio to default audio output.
+
         protected override CreateParams CreateParams
         {
             get
@@ -81,28 +84,6 @@ namespace CommsBot
             OB = file.HasBeenOpenedBefore();
 
             AudioDevicesList();
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Form1_MouseDown(object sender, MouseEventArgs e)
-        {
-            draggable();
-        }
-
-        private void label1_MouseDown(object sender, MouseEventArgs e)
-        {
-            ReleaseCapture();
-            SendMessage(this.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-        }
-
-        private void label2_MouseDown(object sender, MouseEventArgs e)
-        {
-            ReleaseCapture();
-            SendMessage(this.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
         }
 
         #region TopBar
@@ -465,16 +446,43 @@ namespace CommsBot
         }
 
         //Draggable any object
+
+        #region Draggable
         private void draggable()
         {
             ReleaseCapture();
             SendMessage(this.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
         }
 
+        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        {
+            draggable();
+        }
+
+        private void label1_MouseDown(object sender, MouseEventArgs e)
+        {
+            draggable();
+        }
+
+        private void label2_MouseDown(object sender, MouseEventArgs e)
+        {
+            draggable();
+        }
+
+        #endregion
+
+        #region Useless
+
         private void volumeMeter1_Click(object sender, EventArgs e)
         {
 
         }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        #endregion
 
         private void Settings_Click(object sender, EventArgs e)
         {
