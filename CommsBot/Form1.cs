@@ -230,7 +230,10 @@ namespace CommsBot
             string[] audiofiles = Directory.GetFiles(path);
 
             if (audiofiles.Length == 0) {
-                MessageBox.Show("There are no Audio files in this directory", "Note", MessageBoxButtons.OK);
+
+                //MessageBox.Show("There are no Audio files in this directory", "Note", MessageBoxButtons.OK);
+                label2.Text = "No Audio Files in this Directory";
+                label1.Text = "No Audio";
             }
             else
             {
@@ -640,6 +643,11 @@ namespace CommsBot
             }
         }
         #endregion
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
     //Extensions

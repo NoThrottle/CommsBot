@@ -352,6 +352,7 @@ namespace CommsBot
             this.label1.Text = "Type";
             this.label1.TextAlign = System.Drawing.ContentAlignment.BottomRight;
             this.label1.UseCompatibleTextRendering = true;
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             this.label1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label1_MouseDown);
             // 
             // volumeMeter1
