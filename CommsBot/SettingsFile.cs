@@ -19,7 +19,7 @@ namespace CommsBot
          * 2 c - Audio Device 2: Integer/ID
          * 3 d - Tree Path: Path
          * 4 e - Has Been Opened Before?: True/False
-         * 
+         * 5 f - Device Search Type: "NAME"/"GUID"
          */
 
         //Defaults
@@ -28,6 +28,7 @@ namespace CommsBot
         String AD2 = "0";
         String TP = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ".commsbot", "Say");
         String OB = "False";
+        String ST = "NAME";
 
         List<string> Settings = new List<string>();
 
@@ -57,6 +58,7 @@ namespace CommsBot
                 AD2 = Settings[2];
                 TP = Settings[3];
                 OB = Settings[4];
+                ST = Settings[5];
 
                 Console.WriteLine("settings");
                 Console.WriteLine(AD1);
@@ -64,13 +66,14 @@ namespace CommsBot
                 Console.WriteLine(AD2);
                 Console.WriteLine(TP);
                 Console.WriteLine(OB);
+                Console.WriteLine(ST);
                 Console.WriteLine("settings");
 
             }
             catch (Exception e)
             {
                 Console.WriteLine("Exception: " + e.Message);
-                WriteSettings(DefaultAudioDevice(),null,DefaultAudioDevice(),null,null);
+                WriteSettings(DefaultAudioDevice(),null,DefaultAudioDevice(),null,null,null);
                 FetchSettings();
             }
 
@@ -80,16 +83,28 @@ namespace CommsBot
         {
             try
             {
-                return AudioDevicesList()[1];
+                if(ST == "NAME")
+                {
+                    return AudioDevicesList_ProductName()[1];
+                }
+                else if(ST == "GUID")
+                {
+                    return AudioDevicesList_GUID()[1];
+                }
+                else
+                {
+                    MessageBox.Show("Wrong Settings for Search Type", "Error", MessageBoxButtons.OK);
+                    return "1";
+                }
             }
             catch
             {
-                MessageBox.Show("Could not Fetch your audio devices","Error",MessageBoxButtons.OK);
+                MessageBox.Show("Could not Fetch your audio devices", "Error", MessageBoxButtons.OK);
                 return "1";
             }
         }
 
-        private List<string> AudioDevicesList()
+        private List<string> AudioDevicesList_GUID()
         {
             List<String> devices = new List<String>();
             for (int n = -1; n < WaveOut.DeviceCount; n++)
@@ -102,7 +117,20 @@ namespace CommsBot
             return devices;
         }
 
-        public void WriteSettings(string a, string b, string c, string d, string e)
+        private List<string> AudioDevicesList_ProductName()
+        {
+            List<String> devices = new List<String>();
+            for (int n = -1; n < WaveOut.DeviceCount; n++)
+            {
+                var caps = WaveOut.GetCapabilities(n);
+                //Console.WriteLine($"{n}: {caps.ProductName}");
+                devices.Add(caps.ProductName);
+            }
+
+            return devices;
+        }
+
+        public void WriteSettings(string a, string b, string c, string d, string e, string f)
         {
             string LocalAppdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             string prehome = Path.Combine(LocalAppdata, ".commsbot", "settings.txt");
@@ -116,6 +144,7 @@ namespace CommsBot
                 if (c != null) { sw.WriteLine(c); } else { sw.WriteLine(AD2); }
                 if (d != null) { sw.WriteLine(d); } else { sw.WriteLine(TP); }
                 if (e != null) { sw.WriteLine(e); } else { sw.WriteLine(OB); }
+                if (f != null) { sw.WriteLine(f); } else { sw.WriteLine(ST); }
 
                 sw.Close();
             }
@@ -176,6 +205,20 @@ namespace CommsBot
             {
                 return null;
             }
+        }
+
+        public String SearchType()
+        {
+            FetchSettings();
+            if ((ST == "NAME") || (ST == "GUID"))
+            {
+                return ST;
+            }
+            else
+            {
+                MessageBox.Show("Incorrect Setting, using NAME Search Type instead.");
+                return "NAME";
+;           }
         }
 
     }

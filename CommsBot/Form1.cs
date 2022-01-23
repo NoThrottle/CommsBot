@@ -46,11 +46,13 @@ namespace CommsBot
         static String AD2;
         String TP;
         bool? OB;
+        static String ST;
 
         static List<System.Guid> audguid = new List<System.Guid>();
         static List<string> audname = new List<string>();
 
         private bool IsPlayingAudio = false;
+        private bool IsPlayingAudio2 = false;
         bool StopQueued = false;
 
         //Handles MessageBoxes so they don't spam
@@ -72,6 +74,7 @@ namespace CommsBot
         {
             InitializeComponent();
             timer1.Stop();//Incase it starts up rougely
+
             enableKeyHandler = false;
 
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -84,6 +87,7 @@ namespace CommsBot
             AD2 = file.SecondAudioDevice();
             TP = file.TreePath();
             OB = file.HasBeenOpenedBefore();
+            ST = file.SearchType();
 
             AudioDevicesList();
         }
@@ -129,7 +133,7 @@ namespace CommsBot
             String nextpath = globalpath;
 
 
-            Console.WriteLine(home);// debug
+            //Console.WriteLine(home);// debug
             Directory.CreateDirectory(home); // create home if it doesnt exist
 
             if (string.IsNullOrEmpty(nextpath)) { nextpath = home; }
@@ -142,8 +146,8 @@ namespace CommsBot
 
             if (isempty.Length == 0)
             {
-                Console.WriteLine(isempty);
-                Console.WriteLine("upupup");
+                //Console.WriteLine(isempty);
+                //Console.WriteLine("upupup");
                 PlayList(globalpath);
                 //hold any updates to the button and lock them all
                 globalpath = home;
@@ -200,10 +204,15 @@ namespace CommsBot
                     btnminus.Text = "hi";
                     break;
                 case 12:
-                    Console.WriteLine("pressed reset");
-                    if ((outputDevice != null) && (StopQueued != true))
+                    //Console.WriteLine("pressed reset");
+                    if (outputDevice != null)
                     {
-                        outputDevice.Stop();
+                        outputDevice.Stop();                        
+                        StopQueued = true;
+                    }
+                    if (outputDevice2 != null)
+                    {
+                        outputDevice2.Stop();
                         StopQueued = true;
                     }
                     globalpath = home;
@@ -222,6 +231,9 @@ namespace CommsBot
 
         private WaveOutEvent outputDevice;
         private AudioFileReader audioFile;
+
+        private WaveOutEvent outputDevice2;
+        private AudioFileReader audioFile2;
 
         private void PlayList(String path)
         {
@@ -243,10 +255,10 @@ namespace CommsBot
                     Random rnd = new Random();
                     playSound(ParseAD1Index() - 1, audiofiles[rnd.Next(0, audiofiles.Length)]);
 
-                    if (UD2 == true)
+                    if ((UD2 == true) && (IsPlayingAudio2 == false))
                     {
                         Console.WriteLine("Playing on 2nd Device");
-                        playSound(ParseAD2Index() - 1, audiofiles[rnd.Next(0, audiofiles.Length)]);
+                        playSound2(ParseAD2Index() - 1, audiofiles[rnd.Next(0, audiofiles.Length)]);
 
                     }
                 }
@@ -282,33 +294,96 @@ namespace CommsBot
             }
 
             outputDevice.Play();
-            timer1.Start();
+            csdevice = ParseMMDevice();
+            //timer1.Start();
             Console.WriteLine("Play");
             IsPlayingAudio = true;
         }
 
         private void OnPlaybackStopped(object sender, StoppedEventArgs args)
         {
-            timer1.Stop();
+            //timer1.Stop();
             volumeMeter1.Amplitude = 0;
             Console.WriteLine("Play stopped called");
             ResetMessageBoxLimits();
 
-            if ((audioFile != null) && (outputDevice != null))
+            if (audioFile != null)
             {
-                outputDevice.Stop();
-                outputDevice.Dispose();
-                outputDevice = null;
                 audioFile.Dispose();
                 audioFile = null;
+            }
 
+            if (outputDevice != null)
+            {
+                outputDevice.Dispose();
+                outputDevice = null;
+            }
 
-                IsPlayingAudio = false;
-                StopQueued = false;
-                Console.WriteLine("Playstop conditions met");
+            PostPlaybackStop();
+            IsPlayingAudio = false;
+            Console.WriteLine("Playstop conditions met");
+
+        }
+
+        private void playSound2(int deviceNumber, String path)
+        {
+
+            Console.WriteLine("Playsound2");
+
+            if (outputDevice2 == null)
+            {
+                outputDevice2 = new WaveOutEvent() { DeviceNumber = deviceNumber };
+                outputDevice2.PlaybackStopped += OnPlaybackStopped2;
+                Console.WriteLine("outde2v null");
+
+            }
+            else
+            {
+                outputDevice2.PlaybackStopped += OnPlaybackStopped2;
+                Console.WriteLine("outdev2 not null");
 
             }
 
+            if (audioFile2 == null)
+            {
+                audioFile2 = new AudioFileReader(path);
+                outputDevice2.Init(audioFile2);
+                Console.WriteLine("audfile2 null");
+
+            }
+
+            outputDevice2.Play();
+            Console.WriteLine("Play2");
+            IsPlayingAudio2 = true;
+        }
+
+        private void OnPlaybackStopped2(object sender, StoppedEventArgs args)
+
+        {
+            Console.WriteLine("Play2 stopped called");
+
+            if (audioFile2 != null)
+            {
+                audioFile2.Dispose();
+                audioFile2 = null;
+            }
+
+            if (outputDevice2 != null)
+            {
+                outputDevice2.Dispose();
+                outputDevice2 = null;
+            }
+
+            PostPlaybackStop();
+            IsPlayingAudio2 = false;
+            Console.WriteLine("Playstop2 conditions met");
+
+        }
+
+        private void PostPlaybackStop()
+        {
+            //timer1.Stop();
+            StopQueued = false;
         }
 
         static private void AudioDevicesList()
@@ -318,7 +393,7 @@ namespace CommsBot
             for (int n = -1; n < WaveOut.DeviceCount; n++)
             {
                 var caps = WaveOut.GetCapabilities(n);
-                Console.WriteLine($"{n}: {caps.ProductName}");
+                //Console.WriteLine($"{n}: {caps.ProductName}");
                 ids.Add(caps.ProductGuid);
                 nam.Add(caps.ProductName);
             }
@@ -329,46 +404,91 @@ namespace CommsBot
 
         static private int ParseAD1Index()
         {
-            int i = 0;
-
-            foreach (System.Guid id in audguid)
+            if (ST == "NAME")
             {
-                if (id == Guid.Parse(AD1))
+                int i = 0;
+                foreach (var nam in audname)
                 {
-                    return i;
-
+                    if (nam == AD1)
+                    {
+                        return i;
+                    }
+                    i++;
                 }
-                i++;
+
+                if (MB02 == false)
+                {
+                    MessageBox.Show("Previously Set Audio Device 1 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+                    MB02 = true;
+                }
+                return 0;
             }
-            
-            if (MB02 == false)
+            else
             {
-                MessageBox.Show("Previously Set Audio Device 1 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
-                MB02 = true;
+                int i = 0;
+
+                foreach (System.Guid id in audguid)
+                {
+                    if (id == Guid.Parse(AD1))
+                    {
+                        return i;
+
+                    }
+                    i++;
+                }
+
+                if (MB02 == false)
+                {
+                    MessageBox.Show("Previously Set Audio Device 1 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+                    MB02 = true;
+                }
+                return 0;
             }
-            return 0;
+
         }
 
         static private int ParseAD2Index()
         {
-            int i = 0;
-
-            foreach (System.Guid id in audguid)
+            if (ST == "NAME")
             {
-                if (id == Guid.Parse(AD2))
+                int i = 0;
+                foreach (var nam in audname)
                 {
-                    return i;
-
+                    if (nam == AD2)
+                    {
+                        return i;
+                    }
+                    i++;
                 }
-                i++;
-            }
 
-            if (MB03 == false)
-            {
-                MessageBox.Show("Previously Set Audio Device 2 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
-                MB03 = true;
+                if (MB03 == false)
+                {
+                    MessageBox.Show("Previously Set Audio Device 2 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+                    MB03 = true;
+                }
+                return 0;
             }
-            return 0;
+            else
+            {
+                int i = 0;
+
+                foreach (System.Guid id in audguid)
+                {
+                    if (id == Guid.Parse(AD2))
+                    {
+                        return i;
+
+                    }
+                    i++;
+                }
+
+                if (MB03 == false)
+                {
+                    MessageBox.Show("Previously Set Audio Device 2 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+                    MB03 = true;
+                }
+                return 0;
+            }
         }
 
         private void ResetMessageBoxLimits()
@@ -523,39 +643,34 @@ namespace CommsBot
         #endregion
 
         #region Volume Meter
+
+        static MMDevice csdevice = null;
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             //if (IsPlayingAudio)
             //{
 
             //Console.WriteLine("tick");
-            var source = new CancellationTokenSource();
-            Task mine = Task.Run(() => {
-                getVolumes();
-                source.Cancel();
-                }
-            );
+            //var source = new CancellationTokenSource();
+            //Task mine = Task.Run(() => {
+            //    getVolumes();
+            //    source.Cancel();
+            //    }
+            //);
 
-            if (source.IsCancellationRequested)
-            {
-                mine.Dispose();
-            }
+            //if (source.IsCancellationRequested)
+            //{
+            //    mine.Dispose();
+            //}
             //Task.Run(() => getVolumes());
             //}
         }
 
         private static AudioSessionManager2 GetDefaultAudioSessionManager2(CSCore.CoreAudioAPI.DataFlow dataFlow)
         {
-            using (var enumerator = new CSCore.CoreAudioAPI.MMDeviceEnumerator())
-            {
-                using (var device = (MMDevice)ParseMMDevice() /*GetDefaultAudioEndpoint(dataFlow, CSCore.CoreAudioAPI.Role.Multimedia)*/)
-                {
-                    Console.WriteLine("DefaultDevice: " + device.FriendlyName);
-                    var sessionManager = AudioSessionManager2.FromMMDevice(device);
-                    return sessionManager;
-                }
-            }
-
+            var sessionManager = AudioSessionManager2.FromMMDevice(csdevice);
+            return sessionManager;
         }
 
         private void getVolumes()
@@ -565,19 +680,21 @@ namespace CommsBot
             {
                 foreach (var session in sessionEnumerator)
                 {
-                    //Assert.IsNotNull(session);
+
+                    //Console.WriteLine(session.DisplayName);
 
                     using (var session2 = session.QueryInterface<AudioSessionControl2>())
-                    using (var audioMeterInformation = session.QueryInterface<CSCore.CoreAudioAPI.AudioMeterInformation>())
                     {
-                        //Console.WriteLine("Process: {0}; Peak: {1:P}",
-                        //    session2.Process == null ? String.Empty : session2.Process.MainWindowTitle,
-                        //    audioMeterInformation.GetPeakValue() * 100);
 
-                            if (session2.Process.ProcessName == Process.GetCurrentProcess().ProcessName)
+                        if (session2.Process.ProcessName == Process.GetCurrentProcess().ProcessName)
+                        {
+                            using (var audioMeterInformation = session.QueryInterface<CSCore.CoreAudioAPI.AudioMeterInformation>())
                             {
                                 volumeMeter1.Amplitude = audioMeterInformation.GetPeakValue();
+
                             }
+                            
+                        }
                     }
                 }
             }
@@ -621,18 +738,18 @@ namespace CommsBot
                 }
                 else
                 {
-                    Console.WriteLine(String.Concat(device.FriendlyName.ToString().Spill(32).Where(c => !Char.IsWhiteSpace(c))));
-                    Console.WriteLine(String.Concat(audname[ParseAD1Index()].Where(c => !Char.IsWhiteSpace(c))));
-                    Console.WriteLine("Failed");
+                    //Console.WriteLine(String.Concat(device.FriendlyName.ToString().Spill(32).Where(c => !Char.IsWhiteSpace(c))));
+                    //Console.WriteLine(String.Concat(audname[ParseAD1Index()].Where(c => !Char.IsWhiteSpace(c))));
+                    //Console.WriteLine("Failed");
                 }
 
             }
 
             if (MB01 == false)
             {
+                MB01 = true;
                 MessageBox.Show("Unable to update volume meter to " + AD1 + 
                     " . Reading first registered device instead which may be inaccurate.", "Error", MessageBoxButtons.OK);
-                MB01 = true;
             }
             return devices[0];
 
