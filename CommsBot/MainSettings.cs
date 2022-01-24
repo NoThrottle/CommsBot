@@ -388,7 +388,7 @@ namespace CommsBot
         #region TopBar
         private void CloseSettings()
         {
-            Form1 form1 = new Form1();
+            MainWindow form1 = new MainWindow();
             form1.Show();
             this.Close();
         }
