@@ -20,6 +20,7 @@ namespace CommsBot
          * 3 d - Tree Path: Path
          * 4 e - Has Been Opened Before?: True/False
          * 5 f - Device Search Type: "NAME"/"GUID"
+         * 6 g - Index Pack: "0"
          */
 
         //Defaults
@@ -29,6 +30,7 @@ namespace CommsBot
         String TP = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ".commsbot", "Say");
         String OB = "False";
         String ST = "NAME";
+        String IP = "0";
 
         List<string> Settings = new List<string>();
 
@@ -59,6 +61,7 @@ namespace CommsBot
                 TP = Settings[3];
                 OB = Settings[4];
                 ST = Settings[5];
+                IP = Settings[6];
 
                 Console.WriteLine("settings");
                 Console.WriteLine(AD1);
@@ -67,13 +70,14 @@ namespace CommsBot
                 Console.WriteLine(TP);
                 Console.WriteLine(OB);
                 Console.WriteLine(ST);
+                Console.WriteLine(IP);
                 Console.WriteLine("settings");
 
             }
             catch (Exception e)
             {
                 Console.WriteLine("Exception: " + e.Message);
-                WriteSettings(DefaultAudioDevice(),null,DefaultAudioDevice(),null,null,null);
+                WriteSettings(DefaultAudioDevice(),null,DefaultAudioDevice(),null,null,null,null);
                 FetchSettings();
             }
 
@@ -130,7 +134,7 @@ namespace CommsBot
             return devices;
         }
 
-        public void WriteSettings(string a, string b, string c, string d, string e, string f)
+        public void WriteSettings(string a, string b, string c, string d, string e, string f, string g)
         {
             string LocalAppdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             string prehome = Path.Combine(LocalAppdata, ".commsbot", "settings.txt");
@@ -145,6 +149,7 @@ namespace CommsBot
                 if (d != null) { sw.WriteLine(d); } else { sw.WriteLine(TP); }
                 if (e != null) { sw.WriteLine(e); } else { sw.WriteLine(OB); }
                 if (f != null) { sw.WriteLine(f); } else { sw.WriteLine(ST); }
+                if (g != null) { sw.WriteLine(g); } else { sw.WriteLine(IP); }
 
                 sw.Close();
             }
@@ -219,6 +224,21 @@ namespace CommsBot
                 MessageBox.Show("Incorrect Setting, using NAME Search Type instead.");
                 return "NAME";
 ;           }
+        }
+
+        public int PackIndex()
+        {
+            FetchSettings();
+
+            try
+            {
+                return int.Parse(IP);
+            }
+            catch
+            {
+                MessageBox.Show("Pack Index written improperly","Error", MessageBoxButtons.OK);
+                return -1;
+            }
         }
 
     }

@@ -26,7 +26,9 @@ namespace CommsBot
         private void InititateMenuListeners()
         {
             contextsettings.Renderer = new MyRenderer();
-            contextsettings.Items[0].Click += new System.EventHandler(this.PreferencesPressed);
+            SoundPackStripMenuItem.Click += new EventHandler(this.PackManagerPressed);
+            contextsettings.Items[contextsettings.Items.Count - 2].Click += new System.EventHandler(this.PreferencesPressed);
+            contextsettings.Items[contextsettings.Items.Count - 1].Click += new System.EventHandler(this.AboutPressed);
         }
 
         private void contextsettings_Opening(object sender, CancelEventArgs e)
@@ -41,17 +43,33 @@ namespace CommsBot
 
         private void PreferencesPressed(object sender, EventArgs e)
         {
+            EndAnyMusic();
+
+            Settings settings = new Settings();
+            MainWindow.ActiveForm.Close();
+            settings.Show();
+        }
+
+        private void AboutPressed(object sender, EventArgs e)
+        {
+
+        }
+
+        private void PackManagerPressed(object sender, EventArgs e)
+        {
+            EndAnyMusic();
+            PacksWindow pack = new PacksWindow();
+            MainWindow.ActiveForm.Close();
+            pack.Show();
+        }
+
+        private void EndAnyMusic()
+        {
             if ((outputDevice != null) && (StopQueued != true))
             {
                 outputDevice.Stop();
                 StopQueued = true;
             }
-
-            MainWindow.ActiveForm.Close();
-            Settings settings = new Settings();
-            settings.Show();
-
-            //this.Close();
         }
 
         private class MyRenderer : ToolStripProfessionalRenderer
