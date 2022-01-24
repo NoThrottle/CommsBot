@@ -65,7 +65,13 @@ namespace CommsBot
             this.Minimize = new System.Windows.Forms.Button();
             this.Settings = new System.Windows.Forms.Button();
             this.contextsettings = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.SoundPacksStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.SoundPackStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ManagePacksStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.contextsettings.SuspendLayout();
             this.SuspendLayout();
@@ -459,19 +465,78 @@ namespace CommsBot
             // 
             this.contextsettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(49)))), ((int)(((byte)(49)))));
             this.contextsettings.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.preferencesToolStripMenuItem});
+            this.SoundPacksStripMenuItem1,
+            this.toolStripSeparator1,
+            this.preferencesToolStripMenuItem,
+            this.aboutToolStripMenuItem});
             this.contextsettings.Name = "contextsettings";
-            this.contextsettings.Size = new System.Drawing.Size(181, 48);
+            this.contextsettings.ShowImageMargin = false;
+            this.contextsettings.Size = new System.Drawing.Size(156, 108);
             this.contextsettings.Opening += new System.ComponentModel.CancelEventHandler(this.contextsettings_Opening);
             this.contextsettings.MouseDown += new System.Windows.Forms.MouseEventHandler(this.contextsettings_MouseDown);
+            // 
+            // SoundPacksStripMenuItem1
+            // 
+            this.SoundPacksStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.SoundPackStripMenuItem,
+            this.ManagePacksStripMenuItem,
+            this.toolStripSeparator2});
+            this.SoundPacksStripMenuItem1.ForeColor = System.Drawing.Color.Gainsboro;
+            this.SoundPacksStripMenuItem1.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.SoundPacksStripMenuItem1.Name = "SoundPacksStripMenuItem1";
+            this.SoundPacksStripMenuItem1.Size = new System.Drawing.Size(155, 22);
+            this.SoundPacksStripMenuItem1.Text = "Sound Packs";
+            // 
+            // SoundPackStripMenuItem
+            // 
+            this.SoundPackStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(49)))), ((int)(((byte)(49)))));
+            this.SoundPackStripMenuItem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.SoundPackStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.SoundPackStripMenuItem.ForeColor = System.Drawing.Color.Gainsboro;
+            this.SoundPackStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.SoundPackStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.SoundPackStripMenuItem.Name = "SoundPackStripMenuItem";
+            this.SoundPackStripMenuItem.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
+            this.SoundPackStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.SoundPackStripMenuItem.Text = "Add Sound Pack";
+            this.SoundPackStripMenuItem.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.SoundPackStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
+            // 
+            // ManagePacksStripMenuItem
+            // 
+            this.ManagePacksStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(49)))), ((int)(((byte)(49)))));
+            this.ManagePacksStripMenuItem.ForeColor = System.Drawing.Color.Gainsboro;
+            this.ManagePacksStripMenuItem.Name = "ManagePacksStripMenuItem";
+            this.ManagePacksStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ManagePacksStripMenuItem.Text = "Manage Packs";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(5);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(152, 6);
             // 
             // preferencesToolStripMenuItem
             // 
             this.preferencesToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.preferencesToolStripMenuItem.ForeColor = System.Drawing.Color.Gainsboro;
+            this.preferencesToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.preferencesToolStripMenuItem.Text = "Preferences";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.ForeColor = System.Drawing.Color.Gainsboro;
+            this.aboutToolStripMenuItem.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.aboutToolStripMenuItem.Text = "About";
             // 
             // MainWindow
             // 
@@ -553,8 +618,14 @@ namespace CommsBot
         private Timer timer1;
         private PictureBox pictureBox1;
         private Label label3;
-        private ContextMenuStrip contextsettings;
         private ToolStripMenuItem preferencesToolStripMenuItem;
+        private ContextMenuStrip contextsettings;
+        private ToolStripMenuItem aboutToolStripMenuItem;
+        private ToolStripMenuItem SoundPacksStripMenuItem1;
+        private ToolStripMenuItem SoundPackStripMenuItem;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem ManagePacksStripMenuItem;
+        private ToolStripSeparator toolStripSeparator2;
     }
 }
 

@@ -33,6 +33,7 @@ namespace CommsBot
         String TP;
         bool? OB;
         String ST;
+        int IP;
 
         bool ThereIsChange;
 
@@ -51,6 +52,7 @@ namespace CommsBot
             TP = file.TreePath();
             OB = file.HasBeenOpenedBefore();
             ST = file.SearchType();
+            IP = file.PackIndex();
 
             AudioDevicesList();
 
@@ -123,7 +125,7 @@ namespace CommsBot
             {
                 MessageBox.Show("Audio Device 1 was set incorrectly. Resetting to Default", "Error", MessageBoxButtons.OK);
                 SettingsFile file = new SettingsFile();
-                file.WriteSettings(null, null, null, null, null, null);
+                file.WriteSettings(null, null, null, null, null, null, null);
                 return 0;
             }
 
@@ -176,7 +178,7 @@ namespace CommsBot
             {
                 MessageBox.Show("Audio Device 2 was set incorrectly. Resetting to Default", "Error", MessageBoxButtons.OK);
                 SettingsFile file = new SettingsFile();
-                file.WriteSettings(null, null, null, null, null, null);
+                file.WriteSettings(null, null, null, null, null, null, null);
                 return 0;
             }
                        
@@ -333,7 +335,7 @@ namespace CommsBot
         {
             
             SettingsFile file = new SettingsFile();
-            file.WriteSettings(AD1, UD2.ToString(), AD2, TP, OB.ToString(), ST);
+            file.WriteSettings(AD1, UD2.ToString(), AD2, TP, OB.ToString(), ST, IP.ToString());
 
             //Disable After Saving Possible Changes
             ThereIsChange = false;
@@ -434,13 +436,6 @@ namespace CommsBot
             ReleaseCapture();
             SendMessage(this.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
         }
-        #endregion
-
-        private void Settings_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void Settings_MouseDown(object sender, MouseEventArgs e)
         {
             draggable();
@@ -450,6 +445,14 @@ namespace CommsBot
         {
             draggable();
         }
+        #endregion
+
+        private void Settings_Load(object sender, EventArgs e)
+        {
+
+        }
+
+
     }
     public class CustomComboBox : ComboBox
     {
