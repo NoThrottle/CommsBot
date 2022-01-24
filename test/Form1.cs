@@ -16,11 +16,10 @@ namespace test
         bool StopQueued = false;
 
         static int AD1;
-        static string adguid;
+        static string adguid = "";
 
         public Form1()
         {
-
             InitializeComponent();
             _AudioDevicesList();
 
@@ -51,6 +50,8 @@ namespace test
             if (outputDevice == null)
             {
                 outputDevice = new WaveOutEvent() { DeviceNumber = deviceNumber };
+                outputDevice.DesiredLatency = 300;
+                outputDevice.NumberOfBuffers = 1;
                 outputDevice.PlaybackStopped += OnPlaybackStopped;
                 Console.WriteLine("outdev null");
 
@@ -88,7 +89,7 @@ namespace test
 
         private void OnPlaybackStopped(object sender, NAudio.Wave.StoppedEventArgs args)
         {
-            timer1.Stop();
+            //timer1.Stop();
             Console.WriteLine("Play stopped called");
 
             if ((audioFile != null) && (outputDevice != null))
@@ -135,9 +136,10 @@ namespace test
             //if (IsPlayingAudio)
             //{
 
-            ////Console.WriteLine("tick");
+            //Console.WriteLine("tick");
             //var source = new CancellationTokenSource();
-            //Task mine = Task.Run(() => {
+            //Task mine = Task.Run(() =>
+            //{
             //    getVolumes();
             //    source.Cancel();
             //}
@@ -148,7 +150,8 @@ namespace test
             //    mine.Dispose();
             //}
 
-            Task.Run(() => getVolumes());
+            volumeMeter1.Amplitude = GetDefaultAudioSessionManager2(DataFlow.Capture).GetSessionEnumerator().QueryInterface<AudioMeterInformation>().GetPeakValue();
+            //Task.Run(() => getVolumes());
 
             //}
         }
@@ -157,13 +160,15 @@ namespace test
         {
             using (var enumerator = new CSCore.CoreAudioAPI.MMDeviceEnumerator())
             {
-                using (var device = (MMDevice)ParseMMDevice() /*GetDefaultAudioEndpoint(dataFlow, CSCore.CoreAudioAPI.Role.Multimedia)*/)
+                using (var device = (MMDevice)ParseMMDevice())
                 {
                     Console.WriteLine("DefaultDevice: " + device.FriendlyName);
                     var sessionManager = AudioSessionManager2.FromMMDevice(device);
                     return sessionManager;
                 }
             }
+
+            
 
         }
 
@@ -174,14 +179,10 @@ namespace test
             {
                 foreach (var session in sessionEnumerator)
                 {
-                    //Assert.IsNotNull(session);
 
                     using (var session2 = session.QueryInterface<AudioSessionControl2>())
                     using (var audioMeterInformation = session.QueryInterface<CSCore.CoreAudioAPI.AudioMeterInformation>())
                     {
-                        //Console.WriteLine("Process: {0}; Peak: {1:P}",
-                        //    session2.Process == null ? String.Empty : session2.Process.MainWindowTitle,
-                        //    audioMeterInformation.GetPeakValue() * 100);
 
                         if (session2.Process.ProcessName == Process.GetCurrentProcess().ProcessName)
                         {
@@ -255,7 +256,7 @@ namespace test
             }
 
             MessageBox.Show("Unable to update volume meter to " + AD1 + " . Reading first registered device instead which may be inaccurate.", "Error", MessageBoxButtons.OK);
-            return devices[0];
+            return devices[1];
 
         }
         #endregion
@@ -300,8 +301,15 @@ namespace test
 
         private void button3_Click(object sender, EventArgs e)
         {
-            outputDevice.Stop();
+            if (outputDevice != null)
+            {
+                outputDevice.Stop();
+            }
             timer1.Stop();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
         }
     }

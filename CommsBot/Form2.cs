@@ -32,10 +32,12 @@ namespace CommsBot
         String AD2;
         String TP;
         bool? OB;
+        String ST;
 
         bool ThereIsChange;
 
         List<System.Guid> audguid = new List<System.Guid>();
+        List<String> audname = new List<String>();
 
         public Settings()
         {
@@ -48,8 +50,10 @@ namespace CommsBot
             AD2 = file.SecondAudioDevice();
             TP = file.TreePath();
             OB = file.HasBeenOpenedBefore();
+            ST = file.SearchType();
 
             AudioDevicesList();
+
 
             //Instantiate Changes to Buttons/TextBoxes based on Settings Files
 
@@ -76,28 +80,50 @@ namespace CommsBot
         {
             try
             {
-                int i = 0;
-                while (i <= audguid.Count - 1)
+                if (ST == "NAME")
                 {
-                    Console.WriteLine(audguid[i]);
-                    if (audguid[i] != Guid.Parse(AD1))
-                    {
+                    int i = 0;
+                    foreach (var nam in audname)
+                    {                      
+                        Console.WriteLine(nam + " edidie");
+                        Console.WriteLine(AD1);
+                        if (nam == AD1)
+                        {
+                            Console.WriteLine("Returned: " + nam);
+                            Console.WriteLine("With I: " + i);
+                            return i;
+                        }
                         i++;
                     }
-                    else
-                    {
-                        return i;
-                    }
-                }
 
-                MessageBox.Show("Previously Set Audio Device 1 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
-                return 0;
+                    MessageBox.Show("Previously Set Audio Device 1 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);                    
+                    return 0;
+                }
+                else
+                {
+                    int i = 0;
+                    while (i <= audguid.Count - 1)
+                    {
+                        Console.WriteLine(audguid[i]);
+                        if (audguid[i] != Guid.Parse(AD1))
+                        {
+                            i++;
+                        }
+                        else
+                        {
+                            return i;
+                        }
+                    }
+
+                    MessageBox.Show("Previously Set Audio Device 1 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+                    return 0;
+                }
             }
             catch
             {
                 MessageBox.Show("Audio Device 1 was set incorrectly. Resetting to Default", "Error", MessageBoxButtons.OK);
                 SettingsFile file = new SettingsFile();
-                file.WriteSettings(null, null, null, null, null);
+                file.WriteSettings(null, null, null, null, null, null);
                 return 0;
             }
 
@@ -107,29 +133,53 @@ namespace CommsBot
         {
             try
             {
-                int i = 0;
-                while (i != audguid.Count)
+                if (ST == "NAME")
                 {
-                    if (audguid[i] != Guid.Parse(AD2))
+                    int i = 0;
+                    foreach (var nam in audname)
                     {
+                        Console.WriteLine(nam + " edidi1111111e");
+                        Console.WriteLine(AD2);
+
+                        if (nam == AD2)
+                        {
+                            Console.WriteLine("Returned: " + nam);
+                            Console.WriteLine("With I: " + i);
+                            return i;
+                        }
                         i++;
                     }
-                    else
-                    {
-                        return i;
-                    }
-                }
 
-                MessageBox.Show("Previously Set Audio Device 2 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
-                return 0;
+                    MessageBox.Show("Previously Set Audio Device 1 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+                    return 0;
+                }
+                else 
+                {
+                    int i = 0;
+                    while (i != audguid.Count)
+                    {
+                        if (audguid[i] != Guid.Parse(AD2))
+                        {
+                            i++;
+                        }
+                        else
+                        {
+                            return i;
+                        }
+                    }
+
+                    MessageBox.Show("Previously Set Audio Device 2 cannot be found. Resetting to Default", "Error", MessageBoxButtons.OK);
+                    return 0;
+                }
             }
             catch
             {
                 MessageBox.Show("Audio Device 2 was set incorrectly. Resetting to Default", "Error", MessageBoxButtons.OK);
                 SettingsFile file = new SettingsFile();
-                file.WriteSettings(null, null, null, null, null);
+                file.WriteSettings(null, null, null, null, null, null);
                 return 0;
             }
+                       
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -245,14 +295,28 @@ namespace CommsBot
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            AD1 = audguid[comboBox1.SelectedIndex].ToString();
+            if (ST == "NAME")
+            {
+                AD1 = audname[comboBox1.SelectedIndex].ToString();
+            }
+            else
+            {
+                AD1 = audguid[comboBox1.SelectedIndex].ToString();
+            }
             ThereIsChange = true;
             EnableSaveButton();
         }//done
 
         private void customComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            AD2 = audguid[customComboBox1.SelectedIndex].ToString();
+            if (ST == "NAME")
+            {
+                AD2 = audname[customComboBox1.SelectedIndex].ToString();
+            }
+            else
+            {
+                AD2 = audguid[customComboBox1.SelectedIndex].ToString();
+            }
             ThereIsChange = true;
             EnableSaveButton();
         }//Done
@@ -269,7 +333,7 @@ namespace CommsBot
         {
             
             SettingsFile file = new SettingsFile();
-            file.WriteSettings(AD1, UD2.ToString(), AD2, TP, OB.ToString());
+            file.WriteSettings(AD1, UD2.ToString(), AD2, TP, OB.ToString(), ST);
 
             //Disable After Saving Possible Changes
             ThereIsChange = false;
@@ -302,6 +366,8 @@ namespace CommsBot
         {
             List<String> devices = new List<String>();
             List<System.Guid> ids = new List<System.Guid>();
+            List<String> name = new List<String>();
+
             for (int n = -1; n < WaveOut.DeviceCount; n++)
             {
                 var caps = WaveOut.GetCapabilities(n);
@@ -310,10 +376,13 @@ namespace CommsBot
                 this.comboBox1.Items.Add(caps.ProductName);
                 this.customComboBox1.Items.Add(caps.ProductName);
                 ids.Add(caps.ProductGuid);
+                name.Add(caps.ProductName);
             }
 
             audguid = ids;
+            audname = name;
         }
+
         #endregion
 
         #region TopBar
