@@ -21,7 +21,7 @@ using System.Diagnostics;
 
 namespace CommsBot
 {
-    public partial class Form1 : Form
+    public partial class MainWindow : Form
     {
 
         #region Draggable
@@ -70,9 +70,10 @@ namespace CommsBot
             }
         }
 
-        public Form1()
+        public MainWindow()
         {
             InitializeComponent();
+            InititateMenuListeners();
             timer1.Stop();//Incase it starts up rougely
 
             enableKeyHandler = false;
@@ -111,18 +112,17 @@ namespace CommsBot
 
         private void Settings_Click(object sender, EventArgs e)
         {
-            if ((outputDevice != null) && (StopQueued != true))
-            {
-                outputDevice.Stop();
-                StopQueued = true;
-            }
 
-            Settings settings = new Settings();
-            settings.Show();
-            this.Close();
+            contextsettings.Show(Cursor.Position);
+
         }
 
         #endregion
+
+        private void ProcessDirectories()
+        {
+
+        }
 
         private void UpdateButton(int id, Boolean check)
         {
@@ -168,7 +168,6 @@ namespace CommsBot
                     UpdateButtonNaming(nextpath);
                     break;
                 case 0:
-                    //if (subdirs.Length >= 0) { UpdateButton(-1, Path.Combine(nextpath, subdirs[0]), true); }
                     break;
                 case 1:
                     if (subdirs.Length >= 1) { globalpath = Path.Combine(nextpath, subdirs[0]); UpdateButton(-1, true); }
@@ -798,8 +797,8 @@ namespace CommsBot
                 return UnregisterHotKey(hWnd, id);
             }
         }
-        #endregion
 
+        #endregion
 
     }
 

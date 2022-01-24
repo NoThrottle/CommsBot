@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace CommsBot
 {
-    partial class Form1
+    partial class MainWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -35,7 +35,7 @@ namespace CommsBot
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.btn0 = new System.Windows.Forms.Button();
             this.btn1 = new System.Windows.Forms.Button();
             this.btn2 = new System.Windows.Forms.Button();
@@ -64,7 +64,10 @@ namespace CommsBot
             this.button5 = new System.Windows.Forms.Button();
             this.Minimize = new System.Windows.Forms.Button();
             this.Settings = new System.Windows.Forms.Button();
+            this.contextsettings = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.contextsettings.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn0
@@ -452,7 +455,25 @@ namespace CommsBot
             this.Settings.UseVisualStyleBackColor = false;
             this.Settings.Click += new System.EventHandler(this.Settings_Click);
             // 
-            // Form1
+            // contextsettings
+            // 
+            this.contextsettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(49)))), ((int)(((byte)(49)))));
+            this.contextsettings.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.preferencesToolStripMenuItem});
+            this.contextsettings.Name = "contextsettings";
+            this.contextsettings.Size = new System.Drawing.Size(181, 48);
+            this.contextsettings.Opening += new System.ComponentModel.CancelEventHandler(this.contextsettings_Opening);
+            this.contextsettings.MouseDown += new System.Windows.Forms.MouseEventHandler(this.contextsettings_MouseDown);
+            // 
+            // preferencesToolStripMenuItem
+            // 
+            this.preferencesToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.preferencesToolStripMenuItem.ForeColor = System.Drawing.Color.Gainsboro;
+            this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.preferencesToolStripMenuItem.Text = "Preferences";
+            // 
+            // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -489,13 +510,14 @@ namespace CommsBot
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "MainWindow";
             this.Opacity = 0.97D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CommsBot";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.contextsettings.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -531,6 +553,8 @@ namespace CommsBot
         private Timer timer1;
         private PictureBox pictureBox1;
         private Label label3;
+        private ContextMenuStrip contextsettings;
+        private ToolStripMenuItem preferencesToolStripMenuItem;
     }
 }
 
