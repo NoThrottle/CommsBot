@@ -17,6 +17,7 @@ It's basically a sound pad for gamers. Use your numpad when you don't want to us
 - This program is very much in development. It only runs on Windows, and is in beta (right now). However, I am confident with my current progress and that it will run in most computers. That is why you can  download it here!
 - The soundpad only plays Wave (.wav) audio files. Other formats will be supported in the future.
 - If a release doesn't work, i suggest you to try building the project on your pc.
+- I'm currently porting the whole software to another UI framework because Winforms is just too "basic" for my needs.
 
 **Beta Image of CommsBot**<br/>
 ![image](https://user-images.githubusercontent.com/75120879/150243236-ce0ee897-5007-49ea-88d2-16512818bb92.png)
