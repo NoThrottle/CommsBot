@@ -87,21 +87,20 @@
             // 
             this.packslist.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(43)))), ((int)(((byte)(43)))));
             this.packslist.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.packslist.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.packslist.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.packslist.ForeColor = System.Drawing.Color.Gainsboro;
             this.packslist.FormattingEnabled = true;
-            this.packslist.ItemHeight = 25;
+            this.packslist.ItemHeight = 15;
             this.packslist.Items.AddRange(new object[] {
             "PUT YOUR HAND IN MY HAND AND WILL STAND",
             "LET THE SKY FALL",
             "WHEN IT CRUMBLES",
             "WE WILL STAND TALL",
             "FACE IT ALLL"});
-            this.packslist.Location = new System.Drawing.Point(12, 57);
+            this.packslist.Location = new System.Drawing.Point(12, 42);
             this.packslist.Name = "packslist";
             this.packslist.ScrollAlwaysVisible = true;
-            this.packslist.Size = new System.Drawing.Size(314, 250);
+            this.packslist.Size = new System.Drawing.Size(314, 240);
             this.packslist.TabIndex = 46;
             this.packslist.SelectedIndexChanged += new System.EventHandler(this.packslist_SelectedIndexChanged);
             // 
