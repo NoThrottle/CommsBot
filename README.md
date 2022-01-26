@@ -1,7 +1,7 @@
 ![CommsBot](https://user-images.githubusercontent.com/75120879/150243149-a58a7607-706b-43e9-990d-6fb2848eb671.png)
 # CommsBot
 
-It's basically a sound pad for gamers. Use your numpad when you don't want to use your voice for voice chat.
+It's basically a sound pad for gamers. Use your numpad when you don't want to use your voice for voice chat..
 
 **What Is this?**
 - You know how you basically don't use your numpad? Many people don't even have a numpad. Well fortunately, you have one(hopefully). Instead of getting a 60% keyboard (or a smaller laptop), you can use this!
