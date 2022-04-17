@@ -3,6 +3,8 @@
 
 It's basically a sound pad for gamers. Use your numpad when you don't want to use your voice for voice chat..
 
+NOTE: THIS PROJECT IS ON STANDBY. I AM WAITING FOR MAUI TO REWRITE THE UI.
+
 **What Is this?**
 - You know how you basically don't use your numpad? Many people don't even have a numpad. Well fortunately, you have one(hopefully). Instead of getting a 60% keyboard (or a smaller laptop), you can use this!
 - This soundpad uses your filesystem to determine what sounds will be played. Yes, this is basically a file browser. No, this is not a calculator.
