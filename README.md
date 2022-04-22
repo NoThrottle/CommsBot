@@ -36,4 +36,4 @@ Please make sure to update tests as appropriate.
 
 ## License
 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)<br/>
-Basically, do anything, just don't sell or make money off where ever any part of the code goes. (Also you can't trademark or patent it as your own). Must be redistributed with the same license or anything compatible..
+Basically, do anything, just don't sell or make money off where ever any part of the code goes. (Also you can't trademark or patent it as your own). Must be redistributed with the same license or anything compatible.. Will MIT license this when I'm done.
